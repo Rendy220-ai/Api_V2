@@ -1,11 +1,11 @@
-window.addEventListener("load", function () {
+window.addEventListener("load", () => {
   const loadingScreen = document.getElementById("loadingScreen");
-  const body = document.body;
-
-  setTimeout(() => {
-    loadingScreen.style.display = "none";
-    body.classList.remove("no-scroll");
-  }, 1500);
+  if (loadingScreen) {
+    loadingScreen.style.opacity = "0";
+    setTimeout(() => {
+      loadingScreen.style.display = "none";
+    }, 500); // delay biar ada efek smooth hilang
+  }
 });
 
 window.addEventListener("scroll", function () {
