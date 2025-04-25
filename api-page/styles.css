@@ -11,7 +11,7 @@ body {
 }
 
 .navbar {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.95);
   padding: 10px 20px;
   border-bottom: 1px solid #ccc;
   position: fixed;
@@ -19,7 +19,15 @@ body {
   left: 0;
   right: 0;
   z-index: 1000;
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+  backdrop-filter: none;
 }
+
+.navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px);
+}
+
 .navbar-brand {
   margin: 0;
   font-size: 20px;
