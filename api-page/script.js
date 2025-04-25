@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const element = document.getElementById(id);
             if (element) element[property] = value;
         };
-        
+
         setContent('page', 'textContent', settings.name || "FR3 UI");
         setContent('wm', 'textContent', `© 2025 ${settings.apiSettings.creator}. All rights reserved.` || "© 2025 FR3. All rights reserved.");
         setContent('header', 'textContent', settings.name || "FR3 UI");
@@ -35,24 +35,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const apiContent = document.getElementById('apiContent');
         settings.categories.forEach((category) => {
             const sortedItems = category.items.sort((a, b) => a.name.localeCompare(b.name));
-const categoryContent = sortedItems.map((item, index, array) => {
-  const isLastItem = index === array.length - 1;
-  const itemClass = `col-md-6 col-lg-4 api-item ${isLastItem ? 'mb-4' : 'mb-2'}`;
-  return `
-    <div class="${itemClass}" data-name="${item.name}" data-desc="${item.desc}">
-      <div class="hero-section d-flex align-items-center justify-content-between" style="height: 70px;">
-        <div class="api-label-wrapper">
-          <h5 class="mb-0" style="font-size: 16px;">${item.name}</h5>
-          <p class="text-muted mb-0" style="font-size: 0.8rem;">${item.desc}</p>
-        </div>
-        <div class="connector-line"></div>
-        <button class="btn btn-dark btn-sm get-api-btn" data-api-path="${item.path}" data-api-name="${item.name}" data-api-desc="${item.desc}">
-          GET
-        </button>
-      </div>
-    </div>
-  `;
-}).join('');
+            const categoryContent = sortedItems.map((item, index, array) => {
+                const isLastItem = index === array.length - 1;
+                const itemClass = `col-md-6 col-lg-4 api-item ${isLastItem ? 'mb-4' : 'mb-2'}`;
+                return `
+                    <div class="${itemClass}" data-name="${item.name}" data-desc="${item.desc}">
+                      <div class="hero-section d-flex align-items-center justify-content-between" style="height: 70px;">
+                        <div class="api-label-wrapper">
+                          <h5 class="mb-0" style="font-size: 16px;">${item.name}</h5>
+                          <p class="text-muted mb-0" style="font-size: 0.8rem;">${item.desc}</p>
+                        </div>
+                        <div class="connector-line"></div>
+                        <button class="btn btn-dark btn-sm get-api-btn" data-api-path="${item.path}" data-api-name="${item.name}" data-api-desc="${item.desc}">
+                          GET
+                        </button>
+                      </div>
+                    </div>
+                `;
+            }).join('');
             apiContent.insertAdjacentHTML('beforeend', `<h3 class="mb-3 category-header" style="font-size: 21px; font-weight: 600;">${category.name}</h3><div class="row">${categoryContent}</div>`);
         });
 
@@ -110,7 +110,6 @@ const categoryContent = sortedItems.map((item, index, array) => {
                 paramContainer.className = 'param-container';
 
                 const paramsArray = Array.from(params.keys());
-                
                 paramsArray.forEach((param, index) => {
                     const paramGroup = document.createElement('div');
                     paramGroup.className = index < paramsArray.length - 1 ? 'mb-2' : '';
@@ -120,14 +119,13 @@ const categoryContent = sortedItems.map((item, index, array) => {
                     inputField.className = 'form-control';
                     inputField.placeholder = `input ${param}...`;
                     inputField.dataset.param = param;
-
                     inputField.required = true;
                     inputField.addEventListener('input', validateInputs);
 
                     paramGroup.appendChild(inputField);
                     paramContainer.appendChild(paramGroup);
                 });
-                
+
                 const currentItem = settings.categories
                     .flatMap(category => category.items)
                     .find(item => item.path === apiPath);
@@ -165,7 +163,6 @@ const categoryContent = sortedItems.map((item, index, array) => {
                     }
 
                     const apiUrlWithParams = `${window.location.origin}${apiPath.split('?')[0]}?${newParams.toString()}`;
-                    
                     modalRefs.queryInputContainer.innerHTML = '';
                     modalRefs.submitBtn.classList.add('d-none');
                     handleApiRequest(apiUrlWithParams, modalRefs, apiName);
@@ -190,31 +187,22 @@ const categoryContent = sortedItems.map((item, index, array) => {
 
             try {
                 const response = await fetch(apiUrl);
-
-                if (!response.ok) {
-                    console.log(response)
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const contentType = response.headers.get('Content-Type');
                 if (contentType && contentType.startsWith('image/')) {
                     const blob = await response.blob();
                     const imageUrl = URL.createObjectURL(blob);
-
                     const img = document.createElement('img');
                     img.src = imageUrl;
                     img.alt = apiName;
                     img.style.maxWidth = '100%';
-                    img.style.height = 'auto';
                     img.style.borderRadius = '5px';
-
                     modalRefs.content.innerHTML = '';
                     modalRefs.content.appendChild(img);
                 } else {
                     const data = await response.json();
                     modalRefs.content.textContent = JSON.stringify(data, null, 2);
                 }
-
                 modalRefs.endpoint.textContent = apiUrl;
                 modalRefs.endpoint.classList.remove('d-none');
             } catch (error) {
@@ -237,22 +225,20 @@ const categoryContent = sortedItems.map((item, index, array) => {
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     const navbarBrand = document.querySelector('.navbar-brand');
-    if (window.scrollY > 150) {
-        navbar.style.top = "0"
-        navbarBrand.classList.add('visible');
+    if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
+        navbarBrand.classList.add('visible');
     } else {
-        navbar.style.top = "-30vh"
-        navbarBrand.classList.remove('visible');
         navbar.classList.remove('scrolled');
+        navbarBrand.classList.remove('visible');
     }
 });
 
 function closePopup() {
-  document.getElementById('popup').style.display = 'none';
-                  }
-function toggleMenu() {
-  const menu = document.getElementById("slideMenu");
-  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    document.getElementById('popup').style.display = 'none';
 }
-  
+
+function toggleMenu() {
+    const menu = document.getElementById("slideMenu");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+        }
