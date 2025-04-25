@@ -5,6 +5,7 @@ body {
   color: #222;
   padding: 25px 30px;
   transition: all 0.3s ease-in-out;
+  margin-top: 70px;
 }
 
 a {
@@ -12,20 +13,74 @@ a {
   text-decoration: none;
   transition: color 0.2s ease;
 }
-
 a:hover {
   text-decoration: underline;
   color: #005f99;
 }
 
+/* === NAVBAR === */
 .navbar {
-  background-color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255,255,255,0.9);
   border-bottom: 1px solid #ddd;
-  padding: 10px 15px;
+  padding: 10px 20px;
   color: #000;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.navbar.scrolled {
+  background-color: rgba(255,255,255,0.8);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #222;
+  cursor: pointer;
+  display: block;
+}
+
+.slide-menu {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  background-color: #eee;
+  display: none;
+  flex-direction: column;
+  padding: 10px 20px;
+  animation: slideDown 0.3s ease;
+}
+.slide-menu a {
+  padding: 10px;
+  color: #000;
+  border-bottom: 1px solid #ccc;
+}
+.slide-menu a:hover {
+  background-color: #ddd;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === KONTEN === */
 .card,
 .card-body,
 .api-box,
@@ -82,11 +137,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* === POPUP === */
-.popup {
-  display: none !important; /* nonaktifkan popup */
-}
-
 /* === LOADING SCREEN === */
 #loading-screen {
   position: fixed;
@@ -110,8 +160,12 @@ html {
   animation: spin 1s linear infinite;
   margin-bottom: 10px;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* === HIDE POPUP === */
+.popup {
+  display: none !important;
 }
