@@ -1,3 +1,13 @@
+window.addEventListener("load", function () {
+  const loadingScreen = document.getElementById("loadingScreen");
+  const body = document.body;
+
+  setTimeout(() => {
+    loadingScreen.style.display = "none";
+    body.classList.remove("no-scroll");
+  }, 1500);
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     const loadingScreen = document.getElementById("loadingScreen");
     const body = document.body;
