@@ -8,6 +8,15 @@ window.addEventListener("load", function () {
   }, 1500);
 });
 
+window.addEventListener("scroll", function () {
+  const navbar = document.querySelector(".navbar");
+  if (window.scrollY > 10) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     const loadingScreen = document.getElementById("loadingScreen");
     const body = document.body;
