@@ -69,3 +69,7 @@ body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+main {
+  margin-top: 70px;
+}
