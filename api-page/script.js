@@ -253,10 +253,6 @@ function closePopup() {
                   }
 function toggleMenu() {
   const menu = document.getElementById("slideMenu");
-  if (menu.style.display === "flex") {
-    menu.style.display = "none";
-  } else {
-    menu.style.display = "flex";
-  }
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
 }
   
