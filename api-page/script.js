@@ -1,37 +1,3 @@
-window.addEventListener("load", () => {
-  const loadingScreen = document.getElementById("loadingScreen");
-  if (loadingScreen) {
-    loadingScreen.style.opacity = "0";
-    setTimeout(() => {
-      loadingScreen.style.display = "none";
-    }, 500); // delay biar ada efek smooth hilang
-  }
-});
-
-window.addEventListener("scroll", function () {
-  const navbar = document.querySelector(".navbar");
-  if (window.scrollY > 10) {
-    navbar.classList.add("scrolled");
-  } else {
-    navbar.classList.remove("scrolled");
-  }
-});
-
-let lastScrollTop = 0;
-const navbar = document.querySelector(".navbar");
-
-window.addEventListener("scroll", function () {
-  let currentScroll = window.scrollY;
-
-  if (currentScroll > 10) {
-    navbar.classList.add("scrolled");
-  } else {
-    navbar.classList.remove("scrolled");
-  }
-
-  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // update last scroll
-});
-
 document.addEventListener('DOMContentLoaded', async () => {
     const loadingScreen = document.getElementById("loadingScreen");
     const body = document.body;
@@ -284,14 +250,5 @@ window.addEventListener('scroll', () => {
 
 function closePopup() {
   document.getElementById('popup').style.display = 'none';
-}
-
-const navbar = document.querySelector('.navbar');
-
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 10) {
-    navbar.classList.add('scrolled');
-  } else {
-    navbar.classList.remove('scrolled');
-  }
-});
+                  }
+  
