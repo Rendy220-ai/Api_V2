@@ -173,3 +173,22 @@ small, span, p {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.top-marquee {
+  background-color: #000;
+  color: #fff;
+  padding: 8px 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+/* Tambahkan padding-top ke body agar konten tidak tertutup */
+body {
+  padding-top: 40px !important;
+}
