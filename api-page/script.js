@@ -17,6 +17,21 @@ window.addEventListener("scroll", function () {
   }
 });
 
+let lastScrollTop = 0;
+const navbar = document.querySelector(".navbar");
+
+window.addEventListener("scroll", function () {
+  let currentScroll = window.scrollY;
+
+  if (currentScroll > 10) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
+
+  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // update last scroll
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     const loadingScreen = document.getElementById("loadingScreen");
     const body = document.body;
