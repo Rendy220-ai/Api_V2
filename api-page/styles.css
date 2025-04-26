@@ -2,64 +2,51 @@
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #f2f2f2;
-  color: #000;
-  padding-top: 120px;
+  color: #222;
   margin: 0;
+  padding-top: 100px;
   scroll-behavior: smooth;
   transition: all 0.3s ease-in-out;
-}
-
-/* === MARQUEE === */
-.top-marquee {
-  background-color: #e0e0e0;
-  color: #000;
-  padding: 8px 0;
-  text-align: center;
-  font-weight: bold;
-  font-size: 14px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
 }
 
 /* === NAVBAR === */
 .navbar {
   position: fixed;
-  top: 30px;
+  top: 0;
   left: 0;
   right: 0;
   background-color: #fff;
-  z-index: 998;
+  z-index: 999;
   padding: 10px 20px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .navbar.scrolled {
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
-  color: #000;
+  color: #222;
 }
 
-/* === TOGGLE MENU BUTTON === */
+/* === MENU TOGGLE BUTTON === */
 .menu-toggle {
   font-size: 1.5rem;
   background: #007acc;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
 .menu-toggle:hover {
-  background-color: #005f99;
+  background: #005f99;
 }
 
 /* === SLIDE MENU === */
@@ -67,26 +54,26 @@ body {
   display: none;
   flex-direction: column;
   position: fixed;
-  top: 80px;
+  top: 60px;
   left: 0;
   width: 100%;
   height: 50vh;
   background-color: #e0e0e0;
-  z-index: 997;
   padding: 20px;
+  z-index: 998;
   animation: slideDown 0.3s ease-in-out;
 }
 
 .slide-menu a {
   padding: 12px 20px;
-  color: #000;
-  font-weight: 500;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
+  color: #333;
   text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .slide-menu a:hover {
-  background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 @keyframes slideDown {
@@ -94,68 +81,65 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* === CONTENT BOXES === */
-.card,
-.card-body,
-.api-box,
-.api-entry,
-.modal-content {
-  background-color: #fff;
-  color: #000;
+/* === SEARCH INPUT === */
+#searchInput {
+  background: #fff;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 15px;
+  color: #222;
+  padding: 10px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  transition: all 0.3s ease;
-}
-
-/* === FORMS === */
-input,
-textarea,
-select {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  color: #000;
-  border-radius: 6px;
-  padding: 8px 12px;
   width: 100%;
-  box-sizing: border-box;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: #555;
+/* === API ITEM BOX === */
+.api-item {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0.1));
+  color: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/* === BUTTONS === */
+.api-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.api-item h5 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.api-item p {
+  margin: 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* === BUTTON GET === */
 .get-btn,
 button {
-  background-color: #007acc;
+  background-color: #ffffff22;
   color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
+  border: 1px solid #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
 .get-btn:hover,
 button:hover {
-  background-color: #005f99;
+  background-color: #ffffff44;
 }
 
-/* === HEADINGS & TEXT === */
-h1, h2, h3, h4, h5, h6 {
-  color: #000;
-  margin-top: 0;
-}
-
-small, span, p {
-  color: #000;
-}
-
-/* === LOADER === */
+/* === LOADING SCREEN === */
 #loading-screen {
   position: fixed;
   z-index: 9999;
@@ -184,18 +168,25 @@ small, span, p {
   100% { transform: rotate(360deg); }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* === TEXT === */
+h1, h2, h3, h4, h5, h6 {
+  color: #111;
 }
 
-.api-item {
-  opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
+p, span, small {
+  color: #333;
+}
+
+/* === MARQUEE (Text Jalan) === */
+.top-marquee {
+  background: #000;
+  color: #fff;
+  padding: 8px 0;
+  font-size: 14px;
+  text-align: center;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
