@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Info</title>
   <style>
-    /* === RESET DAN BASE === */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
     }
-
     body {
       background: #f0f2f5;
       color: #333;
@@ -21,10 +19,8 @@
       flex-direction: column;
       scroll-behavior: smooth;
     }
-
-    /* === HEADER === */
     header {
-      background: #ffffff;
+      background: #fff;
       padding: 20px;
       text-align: center;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
@@ -35,12 +31,10 @@
       align-items: center;
       justify-content: space-between;
     }
-
     h1 {
       color: #007bff;
       font-size: 1.8rem;
     }
-
     .menu-btn {
       font-size: 24px;
       background: #007bff;
@@ -50,77 +44,69 @@
       padding: 8px 12px;
       cursor: pointer;
     }
-
-    /* === SIDEBAR === */
     .sidebar {
       position: fixed;
-      left: -250px;
       top: 0;
-      width: 200px;
+      left: -250px;
+      width: 220px;
       height: 100%;
-      background: #ffffff;
-      box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+      background: #fff;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.1);
       padding: 20px;
       transition: left 0.3s ease;
       z-index: 1000;
     }
-
     .sidebar.active {
       left: 0;
     }
-
     .sidebar h2 {
-      margin-bottom: 15px;
-      font-size: 20px;
+      font-size: 22px;
+      margin-bottom: 20px;
       color: #333;
     }
-
     .sidebar ul {
       list-style: none;
       padding: 0;
     }
-
     .sidebar ul li {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
-
     .sidebar ul li a {
+      display: block;
       text-decoration: none;
+      background: #f5f5f5;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 17px;
       color: #333;
-      font-weight: 500;
+      font-weight: 600;
+      border: 1px solid #ddd;
+      transition: 0.3s;
     }
-
     .sidebar ul li a:hover {
-      color: #007bff;
+      background: #007bff;
+      color: #fff;
     }
-
-    /* === MAIN CONTENT === */
     .container {
       flex: 1;
       padding: 20px;
-      margin-left: 0;
       transition: margin-left 0.3s;
     }
-
-    .sidebar.active + .container {
-      margin-left: 200px;
+    .sidebar.active ~ .container {
+      margin-left: 220px;
     }
-
-    /* === CARD BOX === */
     .card {
-      background: #ffffff;
+      background: #fff;
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      transition: all 0.3s ease;
       margin-bottom: 20px;
+      transition: 0.3s;
     }
-
     .card:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
-
     .card h2 {
       font-size: 1rem;
       margin-bottom: 8px;
@@ -128,18 +114,15 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
     .card p {
       font-size: 1.5rem;
       font-weight: 700;
       color: #222;
     }
-
-    /* === FOOTER === */
     footer {
       text-align: center;
       padding: 15px;
-      background: #ffffff;
+      background: #fff;
       font-size: 14px;
       color: #666;
       box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
@@ -172,17 +155,17 @@
   <!-- Main Content -->
   <main class="container" id="content">
     <section class="card">
-      <h2>YOUR BATTERY</h2>
+      <h2>Your Battery</h2>
       <p id="batteryLevel">Loading...</p>
     </section>
 
     <section class="card">
-      <h2>WAKTU DAN TANGGAL</h2>
+      <h2>Waktu dan Tanggal</h2>
       <p id="currentTime">Loading...</p>
     </section>
 
     <section class="card">
-      <h2>YOUR IP ADDRESS</h2>
+      <h2>Your IP Address</h2>
       <p id="ipAddress">Loading...</p>
     </section>
   </main>
@@ -192,14 +175,12 @@
   </footer>
 
   <script>
-    // Sidebar Toggle
     const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
     menuBtn.addEventListener('click', () => {
       sidebar.classList.toggle('active');
     });
 
-    // Battery Status
     navigator.getBattery().then(battery => {
       function updateBattery() {
         document.getElementById('batteryLevel').textContent = Math.floor(battery.level * 100) + '%';
@@ -210,250 +191,14 @@
       document.getElementById('batteryLevel').textContent = 'Not Supported';
     });
 
-    // Time and Date
     function updateTime() {
       const now = new Date();
-      const formatted = now.toLocaleString('en-US', { hour12: false });
-      docume<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Info</title>
-  <style>
-    /* === RESET DAN BASE === */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-      background: #f0f2f5;
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      scroll-behavior: smooth;
-    }
-
-    /* === HEADER === */
-    header {
-      background: #ffffff;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    h1 {
-      color: #007bff;
-      font-size: 1.8rem;
-    }
-
-    .menu-btn {
-      font-size: 24px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-
-    /* === SIDEBAR === */
-    .sidebar {
-      position: fixed;
-      left: -250px;
-      top: 0;
-      width: 200px;
-      height: 100%;
-      background: #ffffff;
-      box-shadow: 2px 0 6px rgba(0,0,0,0.08);
-      padding: 20px;
-      transition: left 0.3s ease;
-      z-index: 1000;
-    }
-
-    .sidebar.active {
-      left: 0;
-    }
-
-    .sidebar h2 {
-      margin-bottom: 15px;
-      font-size: 20px;
-      color: #333;
-    }
-
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .sidebar ul li {
-      margin-bottom: 10px;
-    }
-
-    .sidebar ul li a {
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-    }
-
-    .sidebar ul li a:hover {
-      color: #007bff;
-    }
-
-    /* === MAIN CONTENT === */
-    .container {
-      flex: 1;
-      padding: 20px;
-      margin-left: 0;
-      transition: margin-left 0.3s;
-    }
-
-    .sidebar.active + .container {
-      margin-left: 200px;
-    }
-
-    /* === CARD BOX === */
-    .card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      transition: all 0.3s ease;
-      margin-bottom: 20px;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-
-    .card h2 {
-      font-size: 1rem;
-      margin-bottom: 8px;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .card p {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #222;
-    }
-
-    /* === FOOTER === */
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #ffffff;
-      font-size: 14px;
-      color: #666;
-      box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>#Dashboard</h1>
-    <button class="menu-btn" id="menuBtn">&#9776;</button>
-  </header>
-
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <h2>Menu</h2>
-    <ul>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="#">Info Server</a></li>
-      <li><a href="#">Chat Support</a></li>
-      <li><a href="#">A.I</a></li>
-      <li><a href="#">Download</a></li>
-      <li><a href="#">Stalker</a></li>
-      <li><a href="#">Search</a></li>
-      <li><a href="#">Tools</a></li>
-      <li><a href="#">Image</a></li>
-    </ul>
-  </div>
-
-  <!-- Main Content -->
-  <main class="container" id="content">
-    <section class="card">
-      <h2>YOUR BATTERY</h2>
-      <p id="batteryLevel">Loading...</p>
-    </section>
-
-    <section class="card">
-      <h2>WAKTU DAN TANGGAL</h2>
-      <p id="currentTime">Loading...</p>
-    </section>
-
-    <section class="card">
-      <h2>YOUR IP ADDRESS</h2>
-      <p id="ipAddress">Loading...</p>
-    </section>
-  </main>
-
-  <footer>
-    ©2025 Project Dashboard. All rights reserved.
-  </footer>
-
-  <script>
-    // Sidebar Toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    menuBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-    });
-
-    // Battery Status
-    navigator.getBattery().then(battery => {
-      function updateBattery() {
-        document.getElementById('batteryLevel').textContent = Math.floor(battery.level * 100) + '%';
-      }
-      updateBattery();
-      battery.addEventListener('levelchange', updateBattery);
-    }).catch(() => {
-      document.getElementById('batteryLevel').textContent = 'Not Supported';
-    });
-
-    // Time and Date
-    function updateTime() {
-      const now = new Date();
-      const formatted = now.toLocaleString('en-US', { hour12: false });
+      const formatted = now.toLocaleString('en-GB', { hour12: false });
       document.getElementById('currentTime').textContent = formatted;
     }
     setInterval(updateTime, 1000);
     updateTime();
 
-    // Get IP Address
-    fetch('https://api.ipify.org?format=json')
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('ipAddress').textContent = data.ip;
-      })
-      .catch(() => {
-        document.getElementById('ipAddress').textContent = 'Failed to load';
-      });
-  </script>
-
-</body>
-</html>
-nt.getElementById('currentTime').textContent = formatted;
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    // Get IP Address
     fetch('https://api.ipify.org?format=json')
       .then(response => response.json())
       .then(data => {
