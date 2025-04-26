@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         setContent('page', 'textContent', settings.name || "FR3 UI");
-        setContent('wm', 'textContent', `© 2025 ${settings.apiSettings.creator}. All rights reserved.` || "© 2025 FR3. All rights reserved.");
+        setContent('wm', 'textContent', `© 2025 ${settings.apiSettings.creator}` || "© 2025 FR3. All rights reserved.");
         setContent('header', 'textContent', settings.name || "FR3 UI");
         setContent('name', 'textContent', settings.name || "FR3 UI");
         setContent('version', 'textContent', settings.version || "v1.0");
@@ -35,42 +35,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         const apiContent = document.getElementById('apiContent');
         settings.categories.forEach((category) => {
             const sortedItems = category.items.sort((a, b) => a.name.localeCompare(b.name));
-            const categoryContent = sortedItems.map((item, index, array) => {
-                const isLastItem = index === array.length - 1;
-                const itemClass = `col-md-6 col-lg-4 api-item ${isLastItem ? 'mb-4' : 'mb-2'}`;
-                return `
-                    <div class="${itemClass}" data-name="${item.name}" data-desc="${item.desc}">
-                      <div class="hero-section d-flex align-items-center justify-content-between" style="height: 70px;">
+            const categoryContent = sortedItems.map((item) => `
+                <div class="col-md-6 col-lg-4 api-item">
+                    <div class="hero-section d-flex align-items-center justify-content-between" style="height: 70px;">
                         <div class="api-label-wrapper">
-                          <h5 class="mb-0" style="font-size: 16px;">${item.name}</h5>
-                          <p class="text-muted mb-0" style="font-size: 0.8rem;">${item.desc}</p>
+                            <h5 class="mb-0" style="font-size: 16px;">${item.name}</h5>
+                            <p class="text-muted mb-0" style="font-size: 0.8rem;">${item.desc}</p>
                         </div>
                         <div class="connector-line"></div>
                         <button class="btn btn-dark btn-sm get-api-btn" data-api-path="${item.path}" data-api-name="${item.name}" data-api-desc="${item.desc}">
-                          GET
+                            GET
                         </button>
-                      </div>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `).join('');
             apiContent.insertAdjacentHTML('beforeend', `<div class="row">${categoryContent}</div>`);
+        });
 
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', () => {
             const searchTerm = searchInput.value.toLowerCase();
             const apiItems = document.querySelectorAll('.api-item');
-            const categoryHeaders = document.querySelectorAll('.category-header');
 
             apiItems.forEach(item => {
-                const name = item.getAttribute('data-name').toLowerCase();
-                const desc = item.getAttribute('data-desc').toLowerCase();
+                const name = item.getAttribute('data-name')?.toLowerCase() || '';
+                const desc = item.getAttribute('data-desc')?.toLowerCase() || '';
                 item.style.display = (name.includes(searchTerm) || desc.includes(searchTerm)) ? '' : 'none';
-            });
-
-            categoryHeaders.forEach(header => {
-                const categoryRow = header.nextElementSibling;
-                const visibleItems = categoryRow.querySelectorAll('.api-item:not([style*="display: none"])');
-                header.style.display = visibleItems.length ? '' : 'none';
             });
         });
 
@@ -109,33 +99,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 paramContainer.className = 'param-container';
 
                 const paramsArray = Array.from(params.keys());
-                paramsArray.forEach((param, index) => {
-                    const paramGroup = document.createElement('div');
-                    paramGroup.className = index < paramsArray.length - 1 ? 'mb-2' : '';
-
+                paramsArray.forEach((param) => {
                     const inputField = document.createElement('input');
                     inputField.type = 'text';
-                    inputField.className = 'form-control';
-                    inputField.placeholder = `input ${param}...`;
+                    inputField.className = 'form-control mb-2';
+                    inputField.placeholder = `Input ${param}...`;
                     inputField.dataset.param = param;
-                    inputField.required = true;
-                    inputField.addEventListener('input', validateInputs);
-
-                    paramGroup.appendChild(inputField);
-                    paramContainer.appendChild(paramGroup);
+                    paramContainer.appendChild(inputField);
                 });
-
-                const currentItem = settings.categories
-                    .flatMap(category => category.items)
-                    .find(item => item.path === apiPath);
-
-                if (currentItem && currentItem.innerDesc) {
-                    const innerDescDiv = document.createElement('div');
-                    innerDescDiv.className = 'text-muted mt-2';
-                    innerDescDiv.style.fontSize = '13px';
-                    innerDescDiv.innerHTML = currentItem.innerDesc.replace(/\n/g, '<br>');
-                    paramContainer.appendChild(innerDescDiv);
-                }
 
                 modalRefs.queryInputContainer.appendChild(paramContainer);
                 modalRefs.submitBtn.classList.remove('d-none');
@@ -143,28 +114,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 modalRefs.submitBtn.onclick = async () => {
                     const inputs = modalRefs.queryInputContainer.querySelectorAll('input');
                     const newParams = new URLSearchParams();
-                    let isValid = true;
+                    let valid = true;
 
                     inputs.forEach(input => {
                         if (!input.value.trim()) {
-                            isValid = false;
                             input.classList.add('is-invalid');
+                            valid = false;
                         } else {
                             input.classList.remove('is-invalid');
                             newParams.append(input.dataset.param, input.value.trim());
                         }
                     });
 
-                    if (!isValid) {
-                        modalRefs.content.textContent = 'Please fill in all required fields.';
-                        modalRefs.content.classList.remove('d-none');
-                        return;
-                    }
+                    if (!valid) return;
 
-                    const apiUrlWithParams = `${window.location.origin}${apiPath.split('?')[0]}?${newParams.toString()}`;
+                    const newUrl = `${window.location.origin}${apiPath.split('?')[0]}?${newParams.toString()}`;
                     modalRefs.queryInputContainer.innerHTML = '';
                     modalRefs.submitBtn.classList.add('d-none');
-                    handleApiRequest(apiUrlWithParams, modalRefs, apiName);
+                    handleApiRequest(newUrl, modalRefs, apiName);
                 };
             } else {
                 handleApiRequest(baseApiUrl, modalRefs, apiName);
@@ -173,13 +140,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             modal.show();
         });
 
-        function validateInputs() {
-            const submitBtn = document.getElementById('submitQueryBtn');
-            const inputs = document.querySelectorAll('.param-container input');
-            const isValid = Array.from(inputs).every(input => input.value.trim() !== '');
-            submitBtn.disabled = !isValid;
-        }
-
         async function handleApiRequest(apiUrl, modalRefs, apiName) {
             modalRefs.spinner.classList.remove('d-none');
             modalRefs.content.classList.add('d-none');
@@ -187,15 +147,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
                 const contentType = response.headers.get('Content-Type');
                 if (contentType && contentType.startsWith('image/')) {
                     const blob = await response.blob();
                     const imageUrl = URL.createObjectURL(blob);
+
                     const img = document.createElement('img');
                     img.src = imageUrl;
                     img.alt = apiName;
                     img.style.maxWidth = '100%';
                     img.style.borderRadius = '5px';
+
                     modalRefs.content.innerHTML = '';
                     modalRefs.content.appendChild(img);
                 } else {
@@ -211,6 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 modalRefs.content.classList.remove('d-none');
             }
         }
+
     } catch (error) {
         console.error('Error loading settings:', error);
     } finally {
@@ -221,27 +185,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// Navbar behavior
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
-    const navbarBrand = document.querySelector('.navbar-brand');
     if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
-        navbarBrand.classList.add('visible');
     } else {
         navbar.classList.remove('scrolled');
-        navbarBrand.classList.remove('visible');
     }
 });
 
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-}
-
+// Toggle slide menu
 function toggleMenu() {
     const menu = document.getElementById("slideMenu");
     menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-        }
-
-function goHome() {
-  window.location.href = "/"; // arahkan ke halaman utama
 }
+
+// Close popup
+function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+                }
