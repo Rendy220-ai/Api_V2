@@ -205,3 +205,49 @@ function toggleMenu() {
 function closePopup() {
     document.getElementById('popup').style.display = 'none';
                 }
+
+const batteryLevelElement = document.getElementById('batteryLevel');
+
+// Fungsi untuk update data baterai
+function updateBatteryInfo(battery) {
+  const level = Math.round(battery.level * 100);
+  batteryLevelElement.textContent = `${level}%`;
+}
+
+// Cek apakah browser support
+if ('getBattery' in navigator) {
+  navigator.getBattery().then(battery => {
+    updateBatteryInfo(battery);
+
+    // Update kalau level baterai berubah
+    battery.addEventListener('levelchange', () => updateBatteryInfo(battery));
+    battery.addEventListener('chargingchange', () => updateBatteryInfo(battery));
+  }).catch(() => {
+    batteryLevelElement.textContent = "Cannot access battery info.";
+  });
+} else {
+  batteryLevelElement.textContent = "Battery info not supported.";
+}
+
+// Update waktu
+function updateTime() {
+  const now = new Date();
+  const formattedTime = now.toLocaleString('en-US', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false
+  });
+  document.getElementById('currentTime').textContent = formattedTime;
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// Fetch IP Address
+fetch('https://api.ipify.org?format=json')
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('ipAddress').textContent = data.ip;
+  })
+  .catch(() => {
+    document.getElementById('ipAddress').textContent = "Failed to fetch IP";
+  });
