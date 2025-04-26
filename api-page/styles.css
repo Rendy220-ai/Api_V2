@@ -76,7 +76,7 @@ body {
 }
 
 .sidebar ul li {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .sidebar ul li a {
@@ -111,7 +111,7 @@ body {
 }
 
 .header-section h2 {
-  font-size: 24px;
+  font-size: 26px;
   color: #222;
   display: flex;
   align-items: center;
@@ -128,6 +128,7 @@ body {
 
 .header-section p {
   margin-top: 10px;
+  font-size: 16px;
   color: #666;
 }
 
@@ -137,6 +138,7 @@ body {
   margin-top: 20px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  font-size: 15px;
 }
 
 /* === API CARD === */
@@ -144,6 +146,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
+  margin-top: 30px;
 }
 
 .api-card {
@@ -153,21 +156,48 @@ body {
   border-radius: 14px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .api-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+.api-label {
+  display: flex;
+  flex-direction: column;
 }
 
 .api-card h3 {
   font-size: 18px;
-  margin-bottom: 6px;
+  font-weight: bold;
 }
 
 .api-card p {
-  font-size: 14px;
+  font-size: 13px;
   color: #bbb;
+  margin-top: 4px;
+}
+
+/* === BUTTON GET === */
+.get-btn {
+  background: #111;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.get-btn:hover {
+  background: #333;
+  transform: scale(1.05);
 }
 
 /* === FOOTER === */
@@ -193,5 +223,15 @@ footer {
   
   .sidebar.active + .content {
     margin-left: 200px;
+  }
+
+  .api-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .get-btn {
+    align-self: flex-end;
   }
 }
