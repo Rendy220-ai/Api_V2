@@ -11,6 +11,7 @@ body {
   color: #333;
   min-height: 100vh;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* === NAVBAR === */
@@ -18,7 +19,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ffffff;
+  background: #fff;
   padding: 15px 20px;
   position: sticky;
   top: 0;
@@ -57,12 +58,12 @@ body {
   background: #ffffff;
   box-shadow: 2px 0 8px rgba(0,0,0,0.08);
   padding: 20px;
-  transition: left 0.3s ease;
+  transition: transform 0.4s ease;
   z-index: 998;
 }
 
 .sidebar.active {
-  left: 0;
+  transform: translateX(260px);
 }
 
 .sidebar h2 {
@@ -75,12 +76,15 @@ body {
   list-style: none;
 }
 
+.sidebar ul li {
+  margin-bottom: 15px;
+}
+
 .sidebar ul li a {
   display: block;
   width: 100%;
   background: #f8f8f8;
   padding: 12px 18px;
-  margin-bottom: 10px;
   border-radius: 12px;
   color: #333;
   font-size: 16px;
@@ -98,11 +102,11 @@ body {
 /* === MAIN CONTENT === */
 .content {
   padding: 100px 20px 20px 20px;
-  transition: margin-left 0.3s ease;
+  transition: margin-left 0.4s ease;
 }
 
-.sidebar.active + .content {
-  margin-left: 220px;
+.sidebar.active ~ .content {
+  margin-left: 260px;
 }
 
 /* === HEADER SECTION === */
@@ -221,7 +225,7 @@ footer {
     width: 200px;
   }
   
-  .sidebar.active + .content {
+  .sidebar.active ~ .content {
     margin-left: 200px;
   }
 
