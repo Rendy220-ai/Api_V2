@@ -13,16 +13,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         setContent('page', 'textContent', settings.name || "FR3 UI");
-        setContent('wm', 'textContent', `© 2025 ${settings.apiSettings.creator}`);
+        setContent('wm', 'textContent', `© 2025 ${settings.apiSettings?.creator || "FR3"}`);
         setContent('header', 'textContent', settings.name || "FR3 UI");
         setContent('name', 'textContent', settings.name || "FR3 UI");
         setContent('version', 'textContent', settings.version || "v1.0");
-        setContent('versionHeader', 'textContent', settings.header.status || "Active!");
+        setContent('versionHeader', 'textContent', settings.header?.status || "Active!");
         setContent('description', 'textContent', settings.description || "Simple API's");
 
-        // Render Links
         const apiLinks = document.getElementById('apiLinks');
-        if (apiLinks && settings.links?.length) {
+        if (apiLinks && Array.isArray(settings.links)) {
             settings.links.forEach(({ url, name }) => {
                 const link = document.createElement('a');
                 link.href = url;
@@ -33,9 +32,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // Render API Categories
         const apiContent = document.getElementById('apiContent');
-        settings.categories.forEach(category => {
+        settings.categories?.forEach(category => {
             const sortedItems = category.items.sort((a, b) => a.name.localeCompare(b.name));
             const categoryHTML = sortedItems.map(item => `
                 <div class="col-md-6 col-lg-4 api-item" data-name="${item.name}" data-desc="${item.desc}">
@@ -55,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Search API
         const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', () => {
+        searchInput?.addEventListener('input', () => {
             const term = searchInput.value.toLowerCase();
             document.querySelectorAll('.api-item').forEach(item => {
                 const name = item.dataset.name.toLowerCase();
@@ -68,9 +66,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error loading settings:', error);
     } finally {
         setTimeout(() => {
-            loadingScreen.style.display = "none";
+            if (loadingScreen) loadingScreen.style.display = "none";
             body.classList.remove("no-scroll");
-        }, 2000);
+        }, 1500);
     }
 });
 
@@ -92,7 +90,7 @@ document.addEventListener('click', async event => {
 
     refs.label.textContent = apiName;
     refs.desc.textContent = apiDesc;
-    refs.content.textContent = '';
+    refs.content.innerHTML = '';
     refs.endpoint.textContent = '';
     refs.spinner.classList.remove('d-none');
     refs.content.classList.add('d-none');
@@ -136,7 +134,7 @@ async function fetchAPI(url, refs, apiName) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const type = res.headers.get('Content-Type');
-        if (type.includes('image/')) {
+        if (type?.includes('image/')) {
             const blob = await res.blob();
             const img = document.createElement('img');
             img.src = URL.createObjectURL(blob);
@@ -174,15 +172,15 @@ const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
 
 menuBtn?.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-    content.classList.toggle('shifted');
+    sidebar?.classList.toggle('active');
+    content?.classList.toggle('shifted');
 });
 
 // === Battery, Clock, IP ===
 const batteryLevel = document.getElementById('batteryLevel');
 navigator.getBattery?.().then(battery => {
     const updateBattery = () => {
-        batteryLevel.textContent = `${Math.round(battery.level * 100)}%`;
+        if (batteryLevel) batteryLevel.textContent = `${Math.round(battery.level * 100)}%`;
     };
     updateBattery();
     battery.addEventListener('levelchange', updateBattery);
@@ -190,13 +188,20 @@ navigator.getBattery?.().then(battery => {
 
 function updateTime() {
     const now = new Date();
-    const time = now.toLocaleString('en-US', { hour12: false });
-    document.getElementById('currentTime').textContent = time;
+    const time = now.toLocaleString('en-GB', { hour12: false }); // format 24 jam
+    const currentTime = document.getElementById('currentTime');
+    if (currentTime) currentTime.textContent = time;
 }
 setInterval(updateTime, 1000);
 updateTime();
 
 fetch('https://api.ipify.org?format=json')
   .then(res => res.json())
-  .then(data => document.getElementById('ipAddress').textContent = data.ip)
-  .catch(() => document.getElementById('ipAddress').textContent = "Failed to fetch IP");
+  .then(data => {
+      const ip = document.getElementById('ipAddress');
+      if (ip) ip.textContent = data.ip;
+  })
+  .catch(() => {
+      const ip = document.getElementById('ipAddress');
+      if (ip) ip.textContent = "Failed to fetch IP";
+  });
