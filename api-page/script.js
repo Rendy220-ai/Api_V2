@@ -242,3 +242,7 @@ function toggleMenu() {
     const menu = document.getElementById("slideMenu");
     menu.style.display = menu.style.display === "flex" ? "none" : "flex";
         }
+
+function goHome() {
+  window.location.href = "/"; // arahkan ke halaman utama
+}
