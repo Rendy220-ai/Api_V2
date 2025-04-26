@@ -4,21 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Info</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    /* === RESET === */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Poppins', sans-serif;
     }
+
     body {
       background: #f0f2f5;
       color: #333;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
+
+    /* === NAVBAR === */
     header {
       background: #fff;
       padding: 20px;
@@ -28,73 +32,91 @@
       top: 0;
       z-index: 999;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
     }
-    h1 {
+
+    header h1 {
       color: #007bff;
       font-size: 1.8rem;
     }
+
     .menu-btn {
       font-size: 24px;
       background: #007bff;
       color: #fff;
       border: none;
+      padding: 8px 14px;
       border-radius: 8px;
-      padding: 8px 12px;
       cursor: pointer;
+      transition: background 0.3s;
     }
+
+    .menu-btn:hover {
+      background: #0056b3;
+    }
+
+    /* === SIDEBAR === */
     .sidebar {
       position: fixed;
       top: 0;
-      left: -250px;
+      left: -260px;
       width: 220px;
       height: 100%;
       background: #fff;
       box-shadow: 2px 0 8px rgba(0,0,0,0.1);
       padding: 20px;
-      transition: left 0.3s ease;
-      z-index: 1000;
+      transition: transform 0.3s ease;
+      z-index: 998;
     }
+
     .sidebar.active {
-      left: 0;
+      transform: translateX(260px);
     }
+
     .sidebar h2 {
       font-size: 22px;
       margin-bottom: 20px;
       color: #333;
     }
+
     .sidebar ul {
       list-style: none;
-      padding: 0;
     }
+
     .sidebar ul li {
       margin-bottom: 15px;
     }
+
     .sidebar ul li a {
       display: block;
-      text-decoration: none;
+      padding: 12px 18px;
       background: #f5f5f5;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 17px;
-      color: #333;
-      font-weight: 600;
       border: 1px solid #ddd;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #333;
+      font-size: 17px;
+      font-weight: 600;
       transition: 0.3s;
     }
+
     .sidebar ul li a:hover {
       background: #007bff;
       color: #fff;
     }
+
+    /* === MAIN CONTENT === */
     .container {
-      flex: 1;
-      padding: 20px;
+      padding: 100px 20px 20px 20px;
       transition: margin-left 0.3s;
     }
+
     .sidebar.active ~ .container {
-      margin-left: 220px;
+      margin-left: 260px;
     }
+
+    /* === CARD STYLE === */
     .card {
       background: #fff;
       border-radius: 12px;
@@ -103,10 +125,12 @@
       margin-bottom: 20px;
       transition: 0.3s;
     }
+
     .card:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
+
     .card h2 {
       font-size: 1rem;
       margin-bottom: 8px;
@@ -114,11 +138,14 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
+
     .card p {
       font-size: 1.5rem;
       font-weight: 700;
       color: #222;
     }
+
+    /* === FOOTER === */
     footer {
       text-align: center;
       padding: 15px;
@@ -131,6 +158,7 @@
 </head>
 <body>
 
+  <!-- Header/Navbar -->
   <header>
     <h1>#Dashboard</h1>
     <button class="menu-btn" id="menuBtn">&#9776;</button>
@@ -140,7 +168,7 @@
   <div class="sidebar" id="sidebar">
     <h2>Menu</h2>
     <ul>
-      <li><a href="#">Dashboard</a></li>
+      <li><a href="#" class="active">Dashboard</a></li>
     </ul>
   </div>
 
@@ -162,18 +190,22 @@
     </section>
   </main>
 
+  <!-- Footer -->
   <footer>
     ©2025 Project Dashboard. All rights reserved.
   </footer>
 
+  <!-- Script -->
   <script>
     const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
+
     menuBtn.addEventListener('click', () => {
       sidebar.classList.toggle('active');
     });
 
-    navigator.getBattery().then(battery => {
+    // Battery
+    navigator.getBattery?.().then(battery => {
       function updateBattery() {
         document.getElementById('batteryLevel').textContent = Math.floor(battery.level * 100) + '%';
       }
@@ -183,6 +215,7 @@
       document.getElementById('batteryLevel').textContent = 'Not Supported';
     });
 
+    // Clock
     function updateTime() {
       const now = new Date();
       const formatted = now.toLocaleString('en-GB', { hour12: false });
@@ -191,8 +224,9 @@
     setInterval(updateTime, 1000);
     updateTime();
 
+    // IP Address
     fetch('https://api.ipify.org?format=json')
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
         document.getElementById('ipAddress').textContent = data.ip;
       })
