@@ -21,10 +21,13 @@ body {
   align-items: center;
   background: #fff;
   padding: 15px 20px;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 999;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  height: 60px;
 }
 
 .navbar h1 {
@@ -51,10 +54,10 @@ body {
 /* === SIDEBAR === */
 .sidebar {
   position: fixed;
-  top: 0;
+  top: 60px; /* Biar tidak ketiban navbar */
   left: -260px;
   width: 220px;
-  height: 100%;
+  height: calc(100% - 60px);
   background: #ffffff;
   box-shadow: 2px 0 8px rgba(0,0,0,0.08);
   padding: 20px;
@@ -100,12 +103,12 @@ body {
 }
 
 /* === MAIN CONTENT === */
-.content {
-  padding: 100px 20px 20px 20px;
+.main {
+  padding: 80px 20px 20px 20px; /* jarak dari navbar */
   transition: margin-left 0.4s ease;
 }
 
-.sidebar.active ~ .content {
+.sidebar.active ~ .main {
   margin-left: 260px;
 }
 
@@ -220,12 +223,16 @@ footer {
   .api-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .sidebar {
     width: 200px;
   }
-  
-  .sidebar.active ~ .content {
+
+  .sidebar.active {
+    transform: translateX(200px);
+  }
+
+  .sidebar.active ~ .main {
     margin-left: 200px;
   }
 
@@ -238,4 +245,4 @@ footer {
   .get-btn {
     align-self: flex-end;
   }
-}
+  }
