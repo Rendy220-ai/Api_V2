@@ -1,5 +1,3 @@
-const axios = require('axios')
-
 async function ffStalk(id) {
   try {
     if (!id) throw new Error('ID tidak ditemukan.');
