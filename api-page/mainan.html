@@ -71,10 +71,27 @@
       font-size: 0.9rem;
       color: #aaa;
     }
+    .home-button {
+  background-color: #007acc;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin: 10px;
+}
+
+.home-button:hover {
+  background-color: #005f99;
+  transform: scale(1.05);
+}
   </style>
 </head>
 <body>
-
+<button class="home-button" onclick="goHome()">Home</button>
 <header>
   <h1>Portofolio Saya</h1>
   <p>Cita-cita: Pilot & Programmer</p>
@@ -124,6 +141,9 @@
       }, index * 200);
     });
   });
+  function goHome() {
+  window.location.href = ""; // arahkan ke halaman utama
+  }
 </script>
 
 </body>
