@@ -6,95 +6,152 @@
   <title>Dashboard Info</title>
   <style>
     /* === RESET DAN BASE === */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', sans-serif;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
 
-body {
-  background: #f0f2f5;
-  color: #333;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  scroll-behavior: smooth;
-}
+    body {
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+    }
 
-/* === HEADER === */
-header {
-  background: #ffffff;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
+    /* === HEADER === */
+    header {
+      background: #ffffff;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-h1 {
-  color: #007bff;
-  font-size: 2rem;
-}
+    h1 {
+      color: #007bff;
+      font-size: 1.8rem;
+    }
 
-/* === MAIN CONTENT === */
-.container {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+    .menu-btn {
+      font-size: 24px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
 
-/* === CARD BOX === */
-.card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: all 0.3s ease;
-}
+    /* === SIDEBAR === */
+    .sidebar {
+      position: fixed;
+      left: -250px;
+      top: 0;
+      width: 200px;
+      height: 100%;
+      background: #ffffff;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+      padding: 20px;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
 
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
+    .sidebar.active {
+      left: 0;
+    }
 
-.card h2 {
-  font-size: 1rem;
-  margin-bottom: 8px;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+    .sidebar h2 {
+      margin-bottom: 15px;
+      font-size: 20px;
+      color: #333;
+    }
 
-.card p {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #222;
-}
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
 
-/* === FOOTER === */
-footer {
-  text-align: center;
-  padding: 15px;
-  background: #ffffff;
-  font-size: 14px;
-  color: #666;
-  box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
-}
+    .sidebar ul li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .sidebar ul li a:hover {
+      color: #007bff;
+    }
+
+    /* === MAIN CONTENT === */
+    .container {
+      flex: 1;
+      padding: 20px;
+      margin-left: 0;
+      transition: margin-left 0.3s;
+    }
+
+    .sidebar.active + .container {
+      margin-left: 200px;
+    }
+
+    /* === CARD BOX === */
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .card p {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #222;
+    }
+
+    /* === FOOTER === */
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #ffffff;
+      font-size: 14px;
+      color: #666;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
+    }
   </style>
 </head>
 <body>
 
   <header>
     <h1>#Dashboard</h1>
-    !-- Navbar -->
-  <div class="navbar">
-    <h1>#Dashboard</h1>
     <button class="menu-btn" id="menuBtn">&#9776;</button>
-  </div>
+  </header>
 
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
@@ -113,13 +170,7 @@ footer {
   </div>
 
   <!-- Main Content -->
-  <div class="content" id="content">
-    <h2>Welcome to your Dashboard!</h2>
-    <p>Manage your APIs easily from here.</p>
-  </div>
-  </header>
-
-  <main class="container">
+  <main class="container" id="content">
     <section class="card">
       <h2>YOUR BATTERY</h2>
       <p id="batteryLevel">Loading...</p>
@@ -140,6 +191,44 @@ footer {
     ©2025 Project Dashboard. All rights reserved.
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // Sidebar Toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    // Battery Status
+    navigator.getBattery().then(battery => {
+      function updateBattery() {
+        document.getElementById('batteryLevel').textContent = Math.floor(battery.level * 100) + '%';
+      }
+      updateBattery();
+      battery.addEventListener('levelchange', updateBattery);
+    }).catch(() => {
+      document.getElementById('batteryLevel').textContent = 'Not Supported';
+    });
+
+    // Time and Date
+    function updateTime() {
+      const now = new Date();
+      const formatted = now.toLocaleString('en-US', { hour12: false });
+      document.getElementById('currentTime').textContent = formatted;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Get IP Address
+    fetch('https://api.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('ipAddress').textContent = data.ip;
+      })
+      .catch(() => {
+        document.getElementById('ipAddress').textContent = 'Failed to load';
+      });
+  </script>
+
 </body>
 </html>
