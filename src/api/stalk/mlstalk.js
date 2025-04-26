@@ -1,5 +1,3 @@
-const axios = require('axios')
-
 async function mlStalk(id) {
   try {
     if (!id) throw new Error('ID tidak ditemukan.');
