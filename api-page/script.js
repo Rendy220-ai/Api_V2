@@ -67,3 +67,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 2000);
     }
 });
+function toggleMenu() {
+  const menu = document.getElementById('slideMenu');
+  if (menu.style.display === 'flex') {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'flex';
+  }
+}
