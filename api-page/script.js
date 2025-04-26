@@ -53,8 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 `;
             }).join('');
-            apiContent.insertAdjacentHTML('beforeend', `<h3 class="mb-3 category-header" style="font-size: 21px; font-weight: 600;">${category.name}</h3><div class="row">${categoryContent}</div>`);
-        });
+            apiContent.insertAdjacentHTML('beforeend', `<div class="row">${categoryContent}</div>`);
 
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', () => {
