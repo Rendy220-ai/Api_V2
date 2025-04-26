@@ -1,23 +1,39 @@
 const axios = require('axios')
 
-async function mlStalk(id, zone) {
+async function mlStalk(id) {
   try {
-    const res = await axios.get(`https://api.lolhuman.xyz/api/stalk/ml?id=${id}&zone=${zone}&apikey=b0fc710213e294feaea4873c`)
-    return res.data
+    if (!id) throw new Error('ID tidak ditemukan.');
+
+    const tiers = ['Warrior', 'Elite', 'Master', 'Grandmaster', 'Epic', 'Legend', 'Mythic', 'Mythical Glory'];
+    const heroes = ['Alucard', 'Fanny', 'Gusion', 'Lancelot', 'Ling', 'Hayabusa', 'Lesley', 'Granger'];
+
+    const data = {
+      nickname: `ML_Player_${id}`,
+      level: Math.floor(Math.random() * 100) + 1,
+      tier: tiers[Math.floor(Math.random() * tiers.length)],
+      favoriteHero: heroes[Math.floor(Math.random() * heroes.length)],
+      matchesPlayed: Math.floor(Math.random() * 5000),
+      winRate: `${Math.floor(Math.random() * 100)}%`,
+      server: "SEA",
+      message: "Data ini hanya dummy Mobile Legends!"
+    };
+
+    return data;
   } catch (e) {
-    throw new Error('Gagal mengambil data Mobile Legends')
+    throw new Error('Gagal mengambil data Mobile Legends');
   }
 }
 
 module.exports = function (app) {
   app.get('/stalk/ml', async (req, res) => {
-    const { id, zone } = req.query
-    if (!id || !zone) return res.json({ status: false, message: 'Masukkan ID dan Zone ML' })
+    const { id } = req.query;
+    if (!id) return res.json({ status: false, message: 'Masukkan ID Mobile Legends' });
+
     try {
-      const data = await mlStalk(id, zone)
-      res.json({ status: true, result: data })
+      const data = await mlStalk(id);
+      res.json({ status: true, result: data });
     } catch (err) {
-      res.status(500).json({ status: false, message: err.message })
+      res.status(500).json({ status: false, message: err.message });
     }
-  })
+  });
 }
