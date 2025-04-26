@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Info</title>
   <style>
-    * {
+    /* === RESET DAN BASE === */
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -18,19 +19,26 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  scroll-behavior: smooth;
 }
 
+/* === HEADER === */
 header {
   background: #ffffff;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 
 h1 {
   color: #007bff;
+  font-size: 2rem;
 }
 
+/* === MAIN CONTENT === */
 .container {
   flex: 1;
   padding: 20px;
@@ -39,32 +47,42 @@ h1 {
   gap: 20px;
 }
 
+/* === CARD BOX === */
 .card {
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 .card h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 1rem;
+  margin-bottom: 8px;
   color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .card p {
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: #222;
 }
 
+/* === FOOTER === */
 footer {
   text-align: center;
   padding: 15px;
   background: #ffffff;
   font-size: 14px;
   color: #666;
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
 }
   </style>
 </head>
