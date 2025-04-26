@@ -1,9 +1,14 @@
-/* === BASE === */
+/* === RESET DAN BASE === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #d1d1d1; /* abu ke hitam, tidak terlalu putih */
+  background-color: #d1d1d1; /* abu ke hitaman */
   color: #222;
-  margin: 0;
   padding: 100px 20px 20px 20px;
   scroll-behavior: smooth;
   transition: all 0.3s ease-in-out;
@@ -12,41 +17,39 @@ body {
 /* === NAVBAR === */
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   background-color: #fff;
-  z-index: 999;
   padding: 10px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .navbar.scrolled {
-  background-color: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  background-color: rgba(255,255,255,0.85);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
 }
 
 .navbar-brand {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #222;
 }
 
 /* === MENU TOGGLE BUTTON === */
 .menu-toggle {
-  font-size: 1.5rem;
   background: #007acc;
   color: #fff;
   border: none;
   border-radius: 8px;
-  padding: 6px 12px;
+  padding: 8px 14px;
+  font-size: 1.5rem;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color 0.3s;
 }
 
 .menu-toggle:hover {
-  background: #005f99;
+  background-color: #005f99;
 }
 
 /* === SLIDE MENU === */
@@ -57,100 +60,99 @@ body {
   top: 60px;
   left: 0;
   width: 100%;
-  height: 50vh;
   background-color: #bcbcbc;
   padding: 20px;
   z-index: 998;
-  animation: slideDown 0.3s ease-in-out;
+  animation: slideDown 0.4s ease;
 }
 
 .slide-menu a {
-  padding: 12px 20px;
   color: #333;
-  text-decoration: none;
+  padding: 12px 20px;
   font-weight: 500;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
 .slide-menu a:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0,0,0,0.05);
 }
 
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* === SEARCH INPUT === */
+/* === SEARCH BAR === */
 #searchInput {
   background: #fff;
   border: 1px solid #ccc;
+  padding: 10px 14px;
+  font-size: 1rem;
   color: #222;
-  padding: 10px;
   border-radius: 8px;
-  margin-bottom: 20px;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 /* === API ITEM BOX === */
 .api-item {
-  background: linear-gradient(135deg, rgba(20, 20, 20, 0.85), rgba(40, 40, 40, 0.85));
+  background: linear-gradient(135deg, rgba(20,20,20,0.85), rgba(40,40,40,0.85));
   color: #fff;
   padding: 18px;
   border-radius: 14px;
   margin: 15px 0;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .api-item:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.5);
 }
 
 .api-item h5 {
-  margin: 0 0 5px;
+  margin-bottom: 6px;
   font-size: 18px;
-  font-weight: bold;
-  color: #fff;
+  font-weight: 700;
 }
 
 .api-item p {
-  margin: 0;
   font-size: 14px;
   color: #bbb;
 }
 
-/* === BUTTON GET === */
+/* === BUTTON GET API === */
 .get-btn,
 button {
-  background-color: #ffffff22;
+  background: #ffffff22;
   color: #fff;
   border: 1px solid #fff;
   padding: 8px 16px;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .get-btn:hover,
 button:hover {
   background-color: #ffffff44;
+  transform: scale(1.05);
 }
 
 /* === LOADING SCREEN === */
 #loading-screen {
   position: fixed;
-  z-index: 9999;
   top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #d1d1d1;
+  width: 100%;
+  height: 100%;
+  background: #d1d1d1;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  z-index: 10000;
 }
 
 .loader {
@@ -168,43 +170,44 @@ button:hover {
   100% { transform: rotate(360deg); }
 }
 
-/* === TEXT === */
-h1, h2, h3, h4, h5, h6 {
-  color: #111;
-}
-
-p, span, small {
-  color: #333;
-}
-
-/* === MARQUEE (Text Jalan) === */
+/* === MARQUEE / TOP NOTIFICATION === */
 .top-marquee {
   background: #000;
   color: #fff;
   padding: 8px 0;
-  font-size: 14px;
-  text-align: center;
   font-weight: bold;
+  text-align: center;
+  font-size: 14px;
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 1001;
 }
 
+/* === HOMEBUTTON === */
 .home-button {
-  background-color: #007acc;
-  color: white;
+  background: #007acc;
+  color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 20px;
   font-size: 16px;
   font-weight: bold;
   border-radius: 8px;
+  margin: 20px 0;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  margin: 10px;
+  transition: background 0.3s, transform 0.3s;
 }
 
 .home-button:hover {
-  background-color: #005f99;
+  background: #005f99;
   transform: scale(1.05);
+}
+
+/* === TYPOGRAPHY === */
+h1, h2, h3, h4, h5, h6 {
+  color: #111;
+}
+
+p, small, span {
+  color: #333;
 }
