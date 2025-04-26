@@ -170,6 +170,13 @@ window.addEventListener('scroll', () => {
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
+const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+sidebarLinks.forEach(link => {
+    link.addEventListener('click', function () {
+        sidebarLinks.forEach(l => l.classList.remove('active')); // hapus active lainnya
+        this.classList.add('active'); // tambah active di yang diklik
+    });
+});
 
 menuBtn?.addEventListener('click', () => {
     sidebar?.classList.toggle('active');
