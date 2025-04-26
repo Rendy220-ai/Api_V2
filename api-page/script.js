@@ -1,3 +1,15 @@
+
+document.addEventListener('DOMContentLoaded', () => {
+  const hasVisited = localStorage.getItem('hasVisited');
+
+  if (!hasVisited) {
+    // Kalau belum pernah masuk, tandai dan redirect
+    localStorage.setItem('hasVisited', 'true');
+    window.location.href = 'dashboard.html';
+  }
+  // Kalau sudah pernah, tidak redirect
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     const loadingScreen = document.getElementById("loadingScreen");
     const body = document.body;
