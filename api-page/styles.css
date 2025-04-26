@@ -54,7 +54,7 @@ body {
 /* === SIDEBAR === */
 .sidebar {
   position: fixed;
-  top: 60px; /* Biar tidak ketiban navbar */
+  top: 60px;
   left: -260px;
   width: 220px;
   height: calc(100% - 60px);
@@ -102,9 +102,16 @@ body {
   transform: translateX(5px);
 }
 
+/* ACTIVE menu */
+.sidebar ul li a.active {
+  background: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+
 /* === MAIN CONTENT === */
 .main {
-  padding: 80px 20px 20px 20px; /* jarak dari navbar */
+  padding: 80px 20px 20px 20px;
   transition: margin-left 0.4s ease;
 }
 
@@ -245,4 +252,4 @@ footer {
   .get-btn {
     align-self: flex-end;
   }
-  }
+}
