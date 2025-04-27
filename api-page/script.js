@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         settings.categories?.forEach(category => {
             const sortedItems = category.items.sort((a, b) => a.name.localeCompare(b.name));
             const categoryHTML = sortedItems.map(item => `
-                <div class="col-md-6 col-lg-4 api-item" data-name="${item.name}" data-desc="${item.desc}" id="api-card-${btoa(item.path)}">
+                <div class="col-md-6 col-lg-4 api-item" data-name="${item.name}" data-desc="${item.desc}">
                     <div class="hero-section d-flex align-items-center justify-content-between" style="height: 80px;">
                         <div>
                             <h5 class="mb-1" style="font-size: 16px;">${item.name}</h5>
@@ -39,14 +39,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             apiContent.insertAdjacentHTML('beforeend', `<div class="row">${categoryHTML}</div>`);
         });
 
-        // Jalankan cek status untuk semua API
+        // Cek status API satu per satu
         settings.categories?.forEach(category => {
             category.items.forEach(item => {
                 checkAPIStatus(item.path);
             });
         });
 
-        // Search API
+        // Search function
         const searchInput = document.getElementById('searchInput');
         searchInput?.addEventListener('input', () => {
             const term = searchInput.value.toLowerCase();
@@ -63,11 +63,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => {
             if (loadingScreen) loadingScreen.style.display = "none";
             document.body.classList.remove("no-scroll");
-        }, 1000);
+        }, 800);
     }
 });
 
-// === Function: Check API Status ===
+// === Check API Status ===
 async function checkAPIStatus(path) {
     const statusEl = document.getElementById(`status-${btoa(path)}`);
     if (!statusEl) return;
@@ -86,21 +86,19 @@ async function checkAPIStatus(path) {
             statusEl.textContent = 'Offline';
             statusEl.className = 'badge bg-danger';
         }
-    } catch (err) {
+    } catch {
         statusEl.textContent = 'Offline';
         statusEl.className = 'badge bg-danger';
     }
 }
 
-// === API Modal Handling ===
+// === API Modal ===
 document.addEventListener('click', async event => {
     if (!event.target.classList.contains('get-api-btn')) return;
 
     const { apiPath, apiName, apiDesc } = event.target.dataset;
-    const modal = new bootstrap.Modal(document.getElementById('apiResponseModal'), {
-    backdrop: false,
-    keyboard: true
-});
+    const modal = new bootstrap.Modal(document.getElementById('apiResponseModal'), { backdrop: false, keyboard: true });
+
     const refs = {
         label: document.getElementById('apiResponseModalLabel'),
         desc: document.getElementById('apiResponseModalDesc'),
@@ -115,7 +113,7 @@ document.addEventListener('click', async event => {
     refs.desc.textContent = apiDesc;
     refs.content.innerHTML = '';
     refs.endpoint.textContent = '';
-    refs.spinner.classList.remove('d-none');
+    refs.spinner.classList.add('d-none'); // Spinner awal disembunyikan
     refs.content.classList.add('d-none');
     refs.queryInput.innerHTML = '';
     refs.submitBtn.classList.add('d-none');
@@ -143,7 +141,7 @@ document.addEventListener('click', async event => {
                 newParams.append(input.dataset.param, input.value.trim());
             });
             if (!allFilled) {
-                alert('Please fill all input fields.');
+                alert('Please fill all fields.');
                 return;
             }
             await fetchAPI(`${baseUrl}?${newParams.toString()}`, refs, apiName);
@@ -155,10 +153,10 @@ document.addEventListener('click', async event => {
     modal.show();
 });
 
-// === Fetch API and Show Result ===
+// === Fetch API ===
 async function fetchAPI(url, refs, apiName) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    const timeout = setTimeout(() => controller.abort(), 10000);
 
     try {
         refs.spinner.classList.remove('d-none');
@@ -193,10 +191,11 @@ async function fetchAPI(url, refs, apiName) {
     }
 }
 
-// === Sidebar & Navbar ===
+// === Sidebar, Navbar, Info Device ===
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
+
 menuBtn?.addEventListener('click', () => {
     sidebar?.classList.toggle('active');
     content?.classList.toggle('shifted');
@@ -215,16 +214,15 @@ window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// === Battery, Clock, IP ===
+// Battery Level
 navigator.getBattery?.().then(battery => {
     const batteryLevel = document.getElementById('batteryLevel');
-    const updateBattery = () => {
-        if (batteryLevel) batteryLevel.textContent = `${Math.round(battery.level * 100)}%`;
-    };
+    const updateBattery = () => batteryLevel && (batteryLevel.textContent = `${Math.round(battery.level * 100)}%`);
     updateBattery();
     battery.addEventListener('levelchange', updateBattery);
 });
 
+// Current Time
 function updateTime() {
     const now = new Date();
     const time = now.toLocaleString('en-GB', { hour12: false });
@@ -234,6 +232,7 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
+// IP Address
 fetch('https://api.ipify.org?format=json')
     .then(res => res.json())
     .then(data => {
