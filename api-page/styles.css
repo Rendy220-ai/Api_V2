@@ -68,6 +68,11 @@ body {
   transform: translateX(260px);
 }
 
+.sidebar h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
 .sidebar ul {
   list-style: none;
 }
@@ -121,12 +126,8 @@ body {
   padding: 20px;
   border-radius: 14px;
   box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-  margin-bottom: 40px;
+  margin-bottom: 40px; /* <<< INI DIBESARKAN */
   transition: 0.3s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
 }
 
 .api-item:hover {
@@ -134,24 +135,28 @@ body {
   box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-.api-item h5 {
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.api-item p {
+.hero-section h5 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.hero-section p {
   font-size: 14px;
   color: #777;
-  text-align: center;
 }
 
 /* === BADGE STATUS === */
 .badge {
-  padding: 5px 12px;
+  display: inline-block;
+  padding: 4px 10px;
   font-size: 12px;
   border-radius: 50px;
-  text-align: center;
 }
 
 .bg-success {
@@ -164,11 +169,12 @@ body {
   color: #fff;
 }
 
-/* === BUTTON GET (inside API Card) === */
+/* === BUTTON GET === */
 .get-api-btn {
   width: 100%;
+  margin-top: 12px;
   padding: 10px;
-  background: #111;
+  background: #007bff;
   color: #fff;
   font-size: 16px;
   font-weight: 600;
@@ -179,7 +185,7 @@ body {
 }
 
 .get-api-btn:hover {
-  background: #333;
+  background: #0056b3;
   transform: scale(1.02);
 }
 
