@@ -211,3 +211,27 @@ footer {
     margin-left: 200px;
   }
 }
+
+/* === SHIMMER ANIMATION === */
+.shimmer {
+  background: linear-gradient(
+    to right,
+    #007bff 20%,
+    #66b2ff 40%,
+    #007bff 60%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
