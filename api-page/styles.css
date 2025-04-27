@@ -25,9 +25,9 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 999;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   height: 60px;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .navbar h1 {
@@ -55,18 +55,20 @@ body {
 .sidebar {
   position: fixed;
   top: 60px;
-  left: -260px;
-  width: 220px;
+  left: -50%;
+  width: 45%;
   height: calc(100% - 60px);
   background: #ffffff;
   box-shadow: 2px 0 8px rgba(0,0,0,0.08);
   padding: 20px;
-  transition: transform 0.4s ease;
-  z-index: 998;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+  z-index: 999;
 }
 
 .sidebar.active {
-  transform: translateX(260px);
+  transform: translateX(50%);
+  opacity: 1;
 }
 
 .sidebar h2 {
@@ -96,17 +98,11 @@ body {
   transition: background 0.3s, transform 0.3s;
 }
 
-.sidebar ul li a:hover {
-  background: #007bff;
-  color: #fff;
-  transform: translateX(5px);
-}
-
-/* ACTIVE menu */
+.sidebar ul li a:hover,
 .sidebar ul li a.active {
   background: #007bff;
   color: #fff;
-  font-weight: bold;
+  transform: translateX(5px);
 }
 
 /* === MAIN CONTENT === */
@@ -116,7 +112,7 @@ body {
 }
 
 .sidebar.active ~ .main {
-  margin-left: 260px;
+  margin-left: 50%;
 }
 
 /* === HEADER SECTION === */
@@ -227,20 +223,21 @@ footer {
 
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
-  .api-grid {
-    grid-template-columns: 1fr;
-  }
-
   .sidebar {
-    width: 200px;
+    width: 70%;
+    left: -70%;
   }
 
   .sidebar.active {
-    transform: translateX(200px);
+    transform: translateX(70%);
   }
 
   .sidebar.active ~ .main {
-    margin-left: 200px;
+    margin-left: 70%;
+  }
+
+  .api-grid {
+    grid-template-columns: 1fr;
   }
 
   .api-card {
