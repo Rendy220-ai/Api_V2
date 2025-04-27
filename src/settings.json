@@ -9,6 +9,9 @@
     "creator": "FR3 Now", 
     "apikey": ["Nvidia"]
   },
+  "maintenance": true,   // <<< Tambahkan ini (true = aktif maintenance)
+  "links": [],
+  },
   "links": [],
   "categories": [
     {
