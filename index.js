@@ -1,9 +1,9 @@
 const express = require('express');
 const chalk = require('chalk');
 const fs = require('fs');
-const cors = require('cors');
 const path = require('path');
-require("./function.js")
+const cors = require('cors');
+require("./function.js"); // kalau kamu ada fungsi tambahan
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,25 +11,34 @@ const PORT = process.env.PORT || 3000;
 app.enable("trust proxy");
 app.set("json spaces", 2);
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+
+// Static file (frontend)
 app.use('/', express.static(path.join(__dirname, 'api-page')));
 app.use('/src', express.static(path.join(__dirname, 'src')));
 
+// Load settings
 const settingsPath = path.join(__dirname, './src/settings.json');
 const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
-global.apikey = settings.apiSettings.apikey
+global.apikey = settings.apiSettings.apikey;
 
+// Logging request
 app.use((req, res, next) => {
-console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Request Route: ${req.path} `));
-global.totalreq += 1
+    console.log(chalk.bgHex('#FFFF99').hex('#333')(` Request: ${req.method} ${req.path} `));
+    global.totalreq = (global.totalreq || 0) + 1;
+    next();
+});
+
+// Auto response format
+app.use((req, res, next) => {
     const originalJson = res.json;
     res.json = function (data) {
-        if (data && typeof data === 'object') {
+        if (typeof data === 'object' && data !== null) {
             const responseData = {
-                status: data.status,
-                creator: settings.apiSettings.creator || "Created Using Skyzo",
+                status: data.status ?? true,
+                creator: settings.apiSettings.creator || "FR3 Now",
                 ...data
             };
             return originalJson.call(this, responseData);
@@ -39,55 +48,41 @@ global.totalreq += 1
     next();
 });
 
-// Api Route
-let totalRoutes = 0;
+// Load all API routes
 const apiFolder = path.join(__dirname, './src/api');
-fs.readdirSync(apiFolder).forEach((subfolder) => {
-    const subfolderPath = path.join(apiFolder, subfolder);
-    if (fs.statSync(subfolderPath).isDirectory()) {
-        fs.readdirSync(subfolderPath).forEach((file) => {
-            const filePath = path.join(subfolderPath, file);
-            if (path.extname(file) === '.js') {
-                require(filePath)(app);
+let totalRoutes = 0;
+
+fs.readdirSync(apiFolder).forEach(sub => {
+    const subPath = path.join(apiFolder, sub);
+    if (fs.statSync(subPath).isDirectory()) {
+        fs.readdirSync(subPath).forEach(file => {
+            if (file.endsWith('.js')) {
+                require(path.join(subPath, file))(app);
                 totalRoutes++;
-                console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Loaded Route: ${path.basename(file)} `));
+                console.log(chalk.bgHex('#90EE90').hex('#333')(` Loaded: ${file} `));
             }
         });
     }
 });
-console.log(chalk.bgHex('#90EE90').hex('#333').bold(' Load Complete! ✓ '));
-console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Total Routes Loaded: ${totalRoutes} `));
 
+console.log(chalk.bgHex('#90EE90').hex('#333')(` Total Routes Loaded: ${totalRoutes} `));
+
+// Fallback HTML pages
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'api-page', 'index.html'));
 });
 
-app.use((req, res, next) => {
-    res.status(404).sendFile(process.cwd() + "/api-page/404.html");
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'api-page', '404.html'));
 });
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).sendFile(process.cwd() + "/api-page/500.html");
+    res.status(500).sendFile(path.join(__dirname, 'api-page', '500.html'));
 });
 
 app.listen(PORT, () => {
-    console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
-});
-
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const settings = await fetch('/src/settings.json').then(res => res.json());
-
-        if (settings.maintenance) {
-            window.location.href = '/maintenance.html';
-            return; // Stop proses lain
-        }
-
-        // lanjut proses loading normal...
-    } catch (error) {
-        console.error('Failed to load settings:', error);
-    }
+    console.log(chalk.bgHex('#90EE90').hex('#333')(` Server running on port ${PORT} `));
 });
 
 module.exports = app;
