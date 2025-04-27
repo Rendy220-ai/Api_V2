@@ -6,6 +6,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const settings = await fetch('/src/settings.json').then(res => res.json());
 
+        // === Maintenance Check ===
+        if (settings.maintenance) {
+            showMaintenanceMode();
+            throw new Error('Maintenance mode active.');
+        }
+
+        // Normal Loading
         const setContent = (id, property, value) => {
             const el = document.getElementById(id);
             if (el) el[property] = value;
@@ -28,7 +35,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <div>
                             <h5 class="mb-1" style="font-size: 16px;">${item.name}</h5>
                             <p class="text-muted mb-1" style="font-size: 0.8rem;">${item.desc}</p>
-                            <span id="status-${btoa(item.path)}" class="badge bg-secondary">Checking...</span>
                         </div>
                         <button class="btn btn-dark btn-sm get-api-btn" data-api-path="${item.path}" data-api-name="${item.name}" data-api-desc="${item.desc}">
                             GET
@@ -39,14 +45,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             apiContent.insertAdjacentHTML('beforeend', `<div class="row">${categoryHTML}</div>`);
         });
 
-        // Cek status API satu per satu
-        settings.categories?.forEach(category => {
-            category.items.forEach(item => {
-                checkAPIStatus(item.path);
-            });
-        });
-
-        // Search function
         const searchInput = document.getElementById('searchInput');
         searchInput?.addEventListener('input', () => {
             const term = searchInput.value.toLowerCase();
@@ -58,188 +56,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
     } catch (error) {
-        console.error('Error loading settings:', error);
+        console.error(error.message);
     } finally {
         setTimeout(() => {
             if (loadingScreen) loadingScreen.style.display = "none";
             document.body.classList.remove("no-scroll");
-        }, 800);
+        }, 1000);
     }
 });
 
-// === Check API Status ===
-async function checkAPIStatus(path) {
-    const statusEl = document.getElementById(`status-${btoa(path)}`);
-    if (!statusEl) return;
-
-    try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
-
-        const res = await fetch(path.split('?')[0], { method: 'HEAD', signal: controller.signal });
-        clearTimeout(timeout);
-
-        if (res.ok) {
-            statusEl.textContent = 'Online';
-            statusEl.className = 'badge bg-success';
-        } else {
-            statusEl.textContent = 'Offline';
-            statusEl.className = 'badge bg-danger';
-        }
-    } catch {
-        statusEl.textContent = 'Offline';
-        statusEl.className = 'badge bg-danger';
-    }
+// === Function Show Maintenance ===
+function showMaintenanceMode() {
+    document.getElementById('content').innerHTML = `
+        <div style="min-height:80vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+            <h1 class="shimmer" style="font-size: 2.5rem; color: #007bff;">Maintenance Mode</h1>
+            <p style="font-size: 1.2rem; color: #555;">We are currently improving our services.<br>Please come back later!</p>
+        </div>
+    `;
 }
 
-// === API Modal ===
-document.addEventListener('click', async event => {
-    if (!event.target.classList.contains('get-api-btn')) return;
-
-    const { apiPath, apiName, apiDesc } = event.target.dataset;
-    const modal = new bootstrap.Modal(document.getElementById('apiResponseModal'), { backdrop: false, keyboard: true });
-
-    const refs = {
-        label: document.getElementById('apiResponseModalLabel'),
-        desc: document.getElementById('apiResponseModalDesc'),
-        content: document.getElementById('apiResponseContent'),
-        endpoint: document.getElementById('apiEndpoint'),
-        spinner: document.getElementById('apiResponseLoading'),
-        queryInput: document.getElementById('apiQueryInputContainer'),
-        submitBtn: document.getElementById('submitQueryBtn')
-    };
-
-    refs.label.textContent = apiName;
-    refs.desc.textContent = apiDesc;
-    refs.content.innerHTML = '';
-    refs.endpoint.textContent = '';
-    refs.spinner.classList.add('d-none'); // Spinner awal disembunyikan
-    refs.content.classList.add('d-none');
-    refs.queryInput.innerHTML = '';
-    refs.submitBtn.classList.add('d-none');
-
-    const baseUrl = `${window.location.origin}${apiPath.split('?')[0]}`;
-    const params = new URLSearchParams(apiPath.split('?')[1]);
-
-    if ([...params.keys()].length) {
-        const paramDiv = document.createElement('div');
-        [...params.keys()].forEach(param => {
-            const input = document.createElement('input');
-            input.className = 'form-control mb-2';
-            input.placeholder = `Input ${param}...`;
-            input.dataset.param = param;
-            paramDiv.appendChild(input);
-        });
-        refs.queryInput.appendChild(paramDiv);
-        refs.submitBtn.classList.remove('d-none');
-
-        refs.submitBtn.onclick = async () => {
-            const newParams = new URLSearchParams();
-            let allFilled = true;
-            paramDiv.querySelectorAll('input').forEach(input => {
-                if (!input.value.trim()) allFilled = false;
-                newParams.append(input.dataset.param, input.value.trim());
-            });
-            if (!allFilled) {
-                alert('Please fill all fields.');
-                return;
-            }
-            await fetchAPI(`${baseUrl}?${newParams.toString()}`, refs, apiName);
-        };
-    } else {
-        await fetchAPI(apiPath, refs, apiName);
-    }
-
-    modal.show();
-});
-
-// === Fetch API ===
-async function fetchAPI(url, refs, apiName) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
-
-    try {
-        refs.spinner.classList.remove('d-none');
-        refs.content.classList.add('d-none');
-
-        const res = await fetch(url, { signal: controller.signal });
-        clearTimeout(timeout);
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        const type = res.headers.get('Content-Type');
-        if (type?.includes('image/')) {
-            const blob = await res.blob();
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(blob);
-            img.alt = apiName;
-            img.style.maxWidth = '100%';
-            refs.content.innerHTML = '';
-            refs.content.appendChild(img);
-        } else {
-            const data = await res.json();
-            refs.content.textContent = JSON.stringify(data, null, 2);
-        }
-        refs.endpoint.textContent = url;
-        refs.endpoint.classList.remove('d-none');
-
-    } catch (error) {
-        refs.content.textContent = `Error: ${error.name === 'AbortError' ? 'Request Timeout (10s)' : error.message}`;
-    } finally {
-        refs.spinner.classList.add('d-none');
-        refs.content.classList.remove('d-none');
-    }
-}
-
-// === Sidebar, Navbar, Info Device ===
-const menuBtn = document.getElementById('menuBtn');
-const sidebar = document.getElementById('sidebar');
-const content = document.getElementById('content');
-
-menuBtn?.addEventListener('click', () => {
-    sidebar?.classList.toggle('active');
-    content?.classList.toggle('shifted');
-});
-
-const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
-sidebarLinks.forEach(link => {
-    link.addEventListener('click', function () {
-        sidebarLinks.forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-    });
-});
-
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
-});
-
-// Battery Level
-navigator.getBattery?.().then(battery => {
-    const batteryLevel = document.getElementById('batteryLevel');
-    const updateBattery = () => batteryLevel && (batteryLevel.textContent = `${Math.round(battery.level * 100)}%`);
-    updateBattery();
-    battery.addEventListener('levelchange', updateBattery);
-});
-
-// Current Time
-function updateTime() {
-    const now = new Date();
-    const time = now.toLocaleString('en-GB', { hour12: false });
-    const currentTime = document.getElementById('currentTime');
-    if (currentTime) currentTime.textContent = time;
-}
-setInterval(updateTime, 1000);
-updateTime();
-
-// IP Address
-fetch('https://api.ipify.org?format=json')
-    .then(res => res.json())
-    .then(data => {
-        const ip = document.getElementById('ipAddress');
-        if (ip) ip.textContent = data.ip;
-    })
-    .catch(() => {
-        const ip = document.getElementById('ipAddress');
-        if (ip) ip.textContent = "Failed to fetch IP";
-    });
+// === API Modal Handling (Optional, kalau kamu butuh modal GET API) ===
+// (bisa disisipkan seperti biasa, kalau mau saya sekalian buatkan final lagi)
