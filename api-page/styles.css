@@ -93,13 +93,14 @@ body {
   color: #333;
   font-size: 16px;
   font-weight: 600;
-  transition: 0.3s;
+  transition: background 0.3s, transform 0.3s;
 }
 
 .sidebar ul li a:hover,
 .sidebar ul li a.active {
   background: #007bff;
   color: #fff;
+  transform: translateX(5px);
 }
 
 /* === MAIN CONTENT === */
@@ -114,10 +115,10 @@ body {
 
 /* === CATEGORY TITLE === */
 .category-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: #222;
-  margin-top: 40px;
+  margin-top: 60px;
   margin-bottom: 10px;
 }
 
@@ -131,20 +132,22 @@ body {
   border-radius: 10px;
 }
 
-/* === API CARD === */
+/* === API GRID === */
 .api-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   margin-top: 20px;
+  padding-bottom: 50px; /* Space for footer */
 }
 
+/* === API CARD === */
 .api-card {
   background: #fff;
   border-radius: 14px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: 0.3s;
+  transition: all 0.4s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -169,7 +172,7 @@ body {
 
 /* === BUTTON TRY === */
 .try-btn {
-  margin-top: 15px;
+  margin-top: auto;
   background: #007bff;
   color: #fff;
   padding: 10px 14px;
@@ -183,6 +186,17 @@ body {
 
 .try-btn:hover {
   background: #0056b3;
+}
+
+/* === FOOTER === */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  color: #666;
+  background: #fff;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
+  margin-top: 40px;
 }
 
 /* === RESPONSIVE === */
@@ -202,5 +216,17 @@ body {
 
   .api-grid {
     grid-template-columns: 1fr;
+    padding: 10px;
   }
-}
+
+  .api-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .try-btn {
+    width: 100%;
+    text-align: center;
+  }
+                              }
