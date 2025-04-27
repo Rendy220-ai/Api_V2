@@ -76,7 +76,10 @@ document.addEventListener('click', async event => {
     if (!event.target.classList.contains('get-api-btn')) return;
 
     const { apiPath, apiName, apiDesc } = event.target.dataset;
-    const modal = new bootstrap.Modal(document.getElementById('apiResponseModal'));
+    const modal = new bootstrap.Modal(document.getElementById('apiResponseModal'), {
+    backdrop: false,
+    keyboard: true
+});
     const refs = {
         label: document.getElementById('apiResponseModalLabel'),
         desc: document.getElementById('apiResponseModalDesc'),
