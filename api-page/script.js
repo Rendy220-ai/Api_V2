@@ -19,27 +19,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         setContent('versionHeader', 'textContent', settings.header?.status || "Active!");
         setContent('description', 'textContent', settings.description || "Simple API's");
 
-        const apiLinks = document.getElementById('apiLinks');
-        if (apiLinks && Array.isArray(settings.links)) {
-            settings.links.forEach(({ url, name }) => {
-                const link = document.createElement('a');
-                link.href = url;
-                link.target = '_blank';
-                link.textContent = name;
-                link.className = 'lead';
-                apiLinks.appendChild(link);
-            });
-        }
-
         const apiContent = document.getElementById('apiContent');
         settings.categories?.forEach(category => {
             const sortedItems = category.items.sort((a, b) => a.name.localeCompare(b.name));
             const categoryHTML = sortedItems.map(item => `
-                <div class="col-md-6 col-lg-4 api-item" data-name="${item.name}" data-desc="${item.desc}">
-                    <div class="hero-section d-flex align-items-center justify-content-between" style="height: 70px;">
+                <div class="col-md-6 col-lg-4 api-item" data-name="${item.name}" data-desc="${item.desc}" id="api-card-${btoa(item.path)}">
+                    <div class="hero-section d-flex align-items-center justify-content-between" style="height: 80px;">
                         <div>
-                            <h5 class="mb-0" style="font-size: 16px;">${item.name}</h5>
-                            <p class="text-muted mb-0" style="font-size: 0.8rem;">${item.desc}</p>
+                            <h5 class="mb-1" style="font-size: 16px;">${item.name}</h5>
+                            <p class="text-muted mb-1" style="font-size: 0.8rem;">${item.desc}</p>
+                            <span id="status-${btoa(item.path)}" class="badge bg-secondary">Checking...</span>
                         </div>
                         <button class="btn btn-dark btn-sm get-api-btn" data-api-path="${item.path}" data-api-name="${item.name}" data-api-desc="${item.desc}">
                             GET
@@ -48,6 +37,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `).join('');
             apiContent.insertAdjacentHTML('beforeend', `<div class="row">${categoryHTML}</div>`);
+        });
+
+        // Jalankan cek status untuk semua API
+        settings.categories?.forEach(category => {
+            category.items.forEach(item => {
+                checkAPIStatus(item.path);
+            });
         });
 
         // Search API
@@ -71,15 +67,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// === API Modal Handling (Fixed) ===
+// === Function: Check API Status ===
+async function checkAPIStatus(path) {
+    const statusEl = document.getElementById(`status-${btoa(path)}`);
+    if (!statusEl) return;
+
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+
+        const res = await fetch(path.split('?')[0], { method: 'HEAD', signal: controller.signal });
+        clearTimeout(timeout);
+
+        if (res.ok) {
+            statusEl.textContent = 'Online';
+            statusEl.className = 'badge bg-success';
+        } else {
+            statusEl.textContent = 'Offline';
+            statusEl.className = 'badge bg-danger';
+        }
+    } catch (err) {
+        statusEl.textContent = 'Offline';
+        statusEl.className = 'badge bg-danger';
+    }
+}
+
+// === API Modal Handling ===
 document.addEventListener('click', async event => {
     if (!event.target.classList.contains('get-api-btn')) return;
 
     const { apiPath, apiName, apiDesc } = event.target.dataset;
-    const modal = new bootstrap.Modal(document.getElementById('apiResponseModal'), {
-    backdrop: false,
-    keyboard: true
-});
+    const modal = new bootstrap.Modal(document.getElementById('apiResponseModal'));
     const refs = {
         label: document.getElementById('apiResponseModalLabel'),
         desc: document.getElementById('apiResponseModalDesc'),
@@ -94,8 +112,8 @@ document.addEventListener('click', async event => {
     refs.desc.textContent = apiDesc;
     refs.content.innerHTML = '';
     refs.endpoint.textContent = '';
-    refs.spinner.classList.add('d-none'); // Awalnya spinner mati
-    refs.content.classList.remove('d-none');
+    refs.spinner.classList.remove('d-none');
+    refs.content.classList.add('d-none');
     refs.queryInput.innerHTML = '';
     refs.submitBtn.classList.add('d-none');
 
@@ -125,22 +143,19 @@ document.addEventListener('click', async event => {
                 alert('Please fill all input fields.');
                 return;
             }
-            refs.spinner.classList.remove('d-none');
-            refs.content.classList.add('d-none');
             await fetchAPI(`${baseUrl}?${newParams.toString()}`, refs, apiName);
         };
     } else {
-        refs.spinner.classList.remove('d-none');
-        refs.content.classList.add('d-none');
         await fetchAPI(apiPath, refs, apiName);
     }
 
     modal.show();
 });
 
+// === Fetch API and Show Result ===
 async function fetchAPI(url, refs, apiName) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000); // 10 detik timeout
+    const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
     try {
         refs.spinner.classList.remove('d-none');
@@ -175,7 +190,7 @@ async function fetchAPI(url, refs, apiName) {
     }
 }
 
-// === Sidebar Toggle ===
+// === Sidebar & Navbar ===
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
@@ -184,7 +199,6 @@ menuBtn?.addEventListener('click', () => {
     content?.classList.toggle('shifted');
 });
 
-// Sidebar Active Link
 const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
 sidebarLinks.forEach(link => {
     link.addEventListener('click', function () {
@@ -193,13 +207,12 @@ sidebarLinks.forEach(link => {
     });
 });
 
-// Navbar Scroll
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
     navbar.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Battery
+// === Battery, Clock, IP ===
 navigator.getBattery?.().then(battery => {
     const batteryLevel = document.getElementById('batteryLevel');
     const updateBattery = () => {
@@ -209,7 +222,6 @@ navigator.getBattery?.().then(battery => {
     battery.addEventListener('levelchange', updateBattery);
 });
 
-// Clock
 function updateTime() {
     const now = new Date();
     const time = now.toLocaleString('en-GB', { hour12: false });
@@ -219,7 +231,6 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// IP Address
 fetch('https://api.ipify.org?format=json')
     .then(res => res.json())
     .then(data => {
