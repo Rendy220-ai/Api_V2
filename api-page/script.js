@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// === API Modal Handling ===
+// === API Modal Handling (Fixed) ===
 document.addEventListener('click', async event => {
     if (!event.target.classList.contains('get-api-btn')) return;
 
@@ -91,8 +91,8 @@ document.addEventListener('click', async event => {
     refs.desc.textContent = apiDesc;
     refs.content.innerHTML = '';
     refs.endpoint.textContent = '';
-    refs.spinner.classList.remove('d-none');
-    refs.content.classList.add('d-none');
+    refs.spinner.classList.add('d-none'); // Awalnya spinner mati
+    refs.content.classList.remove('d-none');
     refs.queryInput.innerHTML = '';
     refs.submitBtn.classList.add('d-none');
 
@@ -122,9 +122,13 @@ document.addEventListener('click', async event => {
                 alert('Please fill all input fields.');
                 return;
             }
+            refs.spinner.classList.remove('d-none');
+            refs.content.classList.add('d-none');
             await fetchAPI(`${baseUrl}?${newParams.toString()}`, refs, apiName);
         };
     } else {
+        refs.spinner.classList.remove('d-none');
+        refs.content.classList.add('d-none');
         await fetchAPI(apiPath, refs, apiName);
     }
 
@@ -168,7 +172,7 @@ async function fetchAPI(url, refs, apiName) {
     }
 }
 
-// === Sidebar toggle ===
+// === Sidebar Toggle ===
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
@@ -192,7 +196,7 @@ window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Battery Level
+// Battery
 navigator.getBattery?.().then(battery => {
     const batteryLevel = document.getElementById('batteryLevel');
     const updateBattery = () => {
