@@ -133,7 +133,6 @@ document.addEventListener('click', async event => {
     modal.show();
 });
 
-// Fetch API
 async function fetchAPI(url, refs, apiName) {
     try {
         refs.spinner.classList.remove('d-none');
@@ -157,6 +156,12 @@ async function fetchAPI(url, refs, apiName) {
         }
         refs.endpoint.textContent = url;
         refs.endpoint.classList.remove('d-none');
+
+        // TUTUP MODAL setelah sukses
+        const modalElement = document.getElementById('apiResponseModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) modalInstance.hide();
+
     } catch (error) {
         refs.content.textContent = `Error: ${error.message}`;
     } finally {
@@ -164,7 +169,6 @@ async function fetchAPI(url, refs, apiName) {
         refs.content.classList.remove('d-none');
     }
 }
-
 // === Sidebar toggle ===
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
