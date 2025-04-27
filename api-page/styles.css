@@ -61,7 +61,7 @@ body {
   background: #fff;
   box-shadow: 2px 0 8px rgba(0,0,0,0.1);
   padding: 20px;
-  transition: transform 0.3s ease;
+  transition: all 0.4s ease;
   z-index: 999;
 }
 
@@ -87,11 +87,12 @@ body {
   display: block;
   width: 100%;
   background: #f8f8f8;
-  padding: 12px 18px;
+  padding: 12px 24px; /* lebih banyak ke kiri */
   border-radius: 12px;
   color: #333;
   font-size: 16px;
   font-weight: 600;
+  text-align: left;
   text-decoration: none;
   transition: background 0.3s, transform 0.3s;
 }
@@ -106,7 +107,7 @@ body {
 /* === MAIN CONTENT === */
 .main {
   padding: 80px 20px 20px 20px;
-  transition: margin-left 0.3s ease;
+  transition: margin-left 0.4s ease;
 }
 
 .sidebar.active ~ .main {
