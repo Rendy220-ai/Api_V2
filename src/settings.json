@@ -9,8 +9,8 @@
     "creator": "FR3 Now", 
     "apikey": ["Nvidia"]
   },
-  "maintenance": true,
-  "links": [],
+"maintenance": true,
+"links": [],
   "categories": [
     {
       "name": "OpenAI",
@@ -370,6 +370,6 @@
       ]
     }               
   ]
-        }
+}
 
         
