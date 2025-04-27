@@ -67,11 +67,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => {
             if (loadingScreen) loadingScreen.style.display = "none";
             document.body.classList.remove("no-scroll");
-        }, 1500);
+        }, 1000);
     }
 });
 
-// === API Modal Handling (Final Version) ===
+// === API Modal Handling ===
 document.addEventListener('click', async event => {
     if (!event.target.classList.contains('get-api-btn')) return;
 
@@ -87,12 +87,11 @@ document.addEventListener('click', async event => {
         submitBtn: document.getElementById('submitQueryBtn')
     };
 
-    // Reset modal state
     refs.label.textContent = apiName;
     refs.desc.textContent = apiDesc;
     refs.content.innerHTML = '';
     refs.endpoint.textContent = '';
-    refs.spinner.classList.add('d-none');
+    refs.spinner.classList.remove('d-none');
     refs.content.classList.add('d-none');
     refs.queryInput.innerHTML = '';
     refs.submitBtn.classList.add('d-none');
@@ -114,19 +113,18 @@ document.addEventListener('click', async event => {
 
         refs.submitBtn.onclick = async () => {
             const newParams = new URLSearchParams();
-            let empty = false;
+            let allFilled = true;
             paramDiv.querySelectorAll('input').forEach(input => {
-                if (!input.value.trim()) empty = true;
+                if (!input.value.trim()) allFilled = false;
                 newParams.append(input.dataset.param, input.value.trim());
             });
-            if (empty) {
-                alert('Please fill in all fields.');
+            if (!allFilled) {
+                alert('Please fill all input fields.');
                 return;
             }
             await fetchAPI(`${baseUrl}?${newParams.toString()}`, refs, apiName);
         };
     } else {
-        refs.submitBtn.classList.add('d-none');
         await fetchAPI(apiPath, refs, apiName);
     }
 
@@ -135,7 +133,7 @@ document.addEventListener('click', async event => {
 
 async function fetchAPI(url, refs, apiName) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 1000); // 1 detik timeout
+    const timeout = setTimeout(() => controller.abort(), 10000); // 10 detik timeout
 
     try {
         refs.spinner.classList.remove('d-none');
@@ -163,7 +161,7 @@ async function fetchAPI(url, refs, apiName) {
         refs.endpoint.classList.remove('d-none');
 
     } catch (error) {
-        refs.content.textContent = `Error: ${error.message.includes('abort') ? 'Request Timeout (10s)' : error.message}`;
+        refs.content.textContent = `Error: ${error.name === 'AbortError' ? 'Request Timeout (10s)' : error.message}`;
     } finally {
         refs.spinner.classList.add('d-none');
         refs.content.classList.remove('d-none');
