@@ -1,9 +1,9 @@
 const express = require('express');
 const chalk = require('chalk');
 const fs = require('fs');
-const path = require('path');
 const cors = require('cors');
-require("./function.js"); // kalau kamu ada fungsi tambahan
+const path = require('path');
+require("./function.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,34 +11,38 @@ const PORT = process.env.PORT || 3000;
 app.enable("trust proxy");
 app.set("json spaces", 2);
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
-// Static file (frontend)
+// Static File untuk Website
 app.use('/', express.static(path.join(__dirname, 'api-page')));
 app.use('/src', express.static(path.join(__dirname, 'src')));
 
-// Load settings
+// Baca Settings
 const settingsPath = path.join(__dirname, './src/settings.json');
 const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
 global.apikey = settings.apiSettings.apikey;
 
-// Logging request
-app.use((req, res, next) => {
-    console.log(chalk.bgHex('#FFFF99').hex('#333')(` Request: ${req.method} ${req.path} `));
-    global.totalreq = (global.totalreq || 0) + 1;
+// Maintenance Mode Handler
+app.use(async (req, res, next) => {
+    if (settings.maintenance && req.path !== '/maintenance.html') {
+        return res.sendFile(path.join(__dirname, 'api-page', 'maintenance.html'));
+    }
     next();
 });
 
-// Auto response format
+// Auto Inject Creator di response API
 app.use((req, res, next) => {
+    console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Request Route: ${req.path} `));
+    global.totalreq += 1;
+
     const originalJson = res.json;
     res.json = function (data) {
-        if (typeof data === 'object' && data !== null) {
+        if (data && typeof data === 'object') {
             const responseData = {
-                status: data.status ?? true,
-                creator: settings.apiSettings.creator || "FR3 Now",
+                status: data.status,
+                creator: settings.apiSettings.creator || "Created Using Skyzo",
                 ...data
             };
             return originalJson.call(this, responseData);
@@ -48,41 +52,47 @@ app.use((req, res, next) => {
     next();
 });
 
-// Load all API routes
-const apiFolder = path.join(__dirname, './src/api');
+// Load All API Routes
 let totalRoutes = 0;
+const apiFolder = path.join(__dirname, './src/api');
 
-fs.readdirSync(apiFolder).forEach(sub => {
-    const subPath = path.join(apiFolder, sub);
-    if (fs.statSync(subPath).isDirectory()) {
-        fs.readdirSync(subPath).forEach(file => {
-            if (file.endsWith('.js')) {
-                require(path.join(subPath, file))(app);
+fs.readdirSync(apiFolder).forEach((subfolder) => {
+    const subfolderPath = path.join(apiFolder, subfolder);
+    if (fs.statSync(subfolderPath).isDirectory()) {
+        fs.readdirSync(subfolderPath).forEach((file) => {
+            const filePath = path.join(subfolderPath, file);
+            if (path.extname(file) === '.js') {
+                require(filePath)(app);
                 totalRoutes++;
-                console.log(chalk.bgHex('#90EE90').hex('#333')(` Loaded: ${file} `));
+                console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Loaded Route: ${path.basename(file)} `));
             }
         });
     }
 });
 
-console.log(chalk.bgHex('#90EE90').hex('#333')(` Total Routes Loaded: ${totalRoutes} `));
+console.log(chalk.bgHex('#90EE90').hex('#333').bold(' Load Complete! ✓ '));
+console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Total Routes Loaded: ${totalRoutes} `));
 
-// Fallback HTML pages
+// Default Home Page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'api-page', 'index.html'));
 });
 
-app.use((req, res) => {
+// 404 Page
+app.use((req, res, next) => {
     res.status(404).sendFile(path.join(__dirname, 'api-page', '404.html'));
 });
 
+// 500 Internal Server Error Page
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).sendFile(path.join(__dirname, 'api-page', '500.html'));
 });
 
+// Server Listen
 app.listen(PORT, () => {
-    console.log(chalk.bgHex('#90EE90').hex('#333')(` Server running on port ${PORT} `));
+    console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
 });
 
+// EXPORT for serverless deploy (optional)
 module.exports = app;
