@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => {
             if (loadingScreen) loadingScreen.style.display = "none";
             body.classList.remove("no-scroll");
-        }, 1500);
+        }, 1000);
     }
 });
 
@@ -112,10 +112,23 @@ document.addEventListener('click', async event => {
         refs.submitBtn.classList.remove('d-none');
 
         refs.submitBtn.onclick = async () => {
+            const inputs = paramDiv.querySelectorAll('input');
             const newParams = new URLSearchParams();
-            paramDiv.querySelectorAll('input').forEach(input => {
-                if (input.value.trim()) newParams.append(input.dataset.param, input.value.trim());
+            let validInput = false;
+            
+            inputs.forEach(input => {
+                if (input.value.trim()) {
+                    validInput = true;
+                    newParams.append(input.dataset.param, input.value.trim());
+                }
             });
+
+            if (!validInput) {
+                alert('Please fill in the input first!');
+                refs.spinner.classList.add('d-none');
+                return;
+            }
+
             if ([...newParams.keys()].length) {
                 await fetchAPI(`${baseUrl}?${newParams.toString()}`, refs, apiName);
             }
@@ -127,11 +140,14 @@ document.addEventListener('click', async event => {
     modal.show();
 });
 
+// === Fetch API ===
 async function fetchAPI(url, refs, apiName) {
     try {
         refs.spinner.classList.remove('d-none');
+        refs.content.innerHTML = '';
+
         const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
 
         const type = res.headers.get('Content-Type');
         if (type?.includes('image/')) {
@@ -140,47 +156,41 @@ async function fetchAPI(url, refs, apiName) {
             img.src = URL.createObjectURL(blob);
             img.alt = apiName;
             img.style.maxWidth = '100%';
-            refs.content.innerHTML = '';
             refs.content.appendChild(img);
         } else {
             const data = await res.json();
             refs.content.textContent = JSON.stringify(data, null, 2);
         }
         refs.endpoint.textContent = url;
-        refs.endpoint.classList.remove('d-none');
     } catch (error) {
-        refs.content.textContent = `Error: ${error.message}`;
+        refs.content.innerHTML = `<div class="alert alert-danger">Failed to fetch API: ${error.message}</div>`;
     } finally {
         refs.spinner.classList.add('d-none');
         refs.content.classList.remove('d-none');
     }
 }
 
-// === Navbar Scroll Effect ===
+// === Navbar Scroll ===
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// === Sidebar Toggle ===
+// === Sidebar ===
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
 const content = document.getElementById('content');
-const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
-sidebarLinks.forEach(link => {
-    link.addEventListener('click', function () {
-        sidebarLinks.forEach(l => l.classList.remove('active')); // hapus active lainnya
-        this.classList.add('active'); // tambah active di yang diklik
-    });
-});
-
 menuBtn?.addEventListener('click', () => {
     sidebar?.classList.toggle('active');
     content?.classList.toggle('shifted');
+});
+
+const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+sidebarLinks.forEach(link => {
+    link.addEventListener('click', function () {
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+    });
 });
 
 // === Battery, Clock, IP ===
@@ -195,7 +205,7 @@ navigator.getBattery?.().then(battery => {
 
 function updateTime() {
     const now = new Date();
-    const time = now.toLocaleString('en-GB', { hour12: false }); // format 24 jam
+    const time = now.toLocaleString('en-GB', { hour12: false });
     const currentTime = document.getElementById('currentTime');
     if (currentTime) currentTime.textContent = time;
 }
@@ -203,12 +213,12 @@ setInterval(updateTime, 1000);
 updateTime();
 
 fetch('https://api.ipify.org?format=json')
-  .then(res => res.json())
-  .then(data => {
-      const ip = document.getElementById('ipAddress');
-      if (ip) ip.textContent = data.ip;
-  })
-  .catch(() => {
-      const ip = document.getElementById('ipAddress');
-      if (ip) ip.textContent = "Failed to fetch IP";
-  });
+    .then(res => res.json())
+    .then(data => {
+        const ip = document.getElementById('ipAddress');
+        if (ip) ip.textContent = data.ip;
+    })
+    .catch(() => {
+        const ip = document.getElementById('ipAddress');
+        if (ip) ip.textContent = "Failed to fetch IP";
+    });
