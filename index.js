@@ -1,58 +1,78 @@
 const express = require('express');
+const chalk = require('chalk');
+const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
+require("./function.js")
 
-// Setup express app
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.enable("trust proxy");
+app.set("json spaces", 2);
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Static Files
-app.use('/api-page', express.static(path.join(__dirname, 'api-page')));
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+app.use('/', express.static(path.join(__dirname, 'api-page')));
 app.use('/src', express.static(path.join(__dirname, 'src')));
 
-// Load settings
-let settings = {};
-const settingsPath = path.join(__dirname, 'src', 'settings.json');
-try {
-  settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
-} catch (err) {
-  console.error('Error loading settings.json:', err.message);
-  settings.maintenance = false;
-}
+const settingsPath = path.join(__dirname, './src/settings.json');
+const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+global.apikey = settings.apiSettings.apikey
 
-// Maintenance Middleware
 app.use((req, res, next) => {
-  if (settings.maintenance) {
-    return res.sendFile(path.join(__dirname, 'api-page', 'maintenance.html'));
-  }
-  next();
+console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Request Route: ${req.path} `));
+global.totalreq += 1
+    const originalJson = res.json;
+    res.json = function (data) {
+        if (data && typeof data === 'object') {
+            const responseData = {
+                status: data.status,
+                creator: settings.apiSettings.creator || "Created Using Skyzo",
+                ...data
+            };
+            return originalJson.call(this, responseData);
+        }
+        return originalJson.call(this, data);
+    };
+    next();
 });
 
-// Routes
+// Api Route
+let totalRoutes = 0;
+const apiFolder = path.join(__dirname, './src/api');
+fs.readdirSync(apiFolder).forEach((subfolder) => {
+    const subfolderPath = path.join(apiFolder, subfolder);
+    if (fs.statSync(subfolderPath).isDirectory()) {
+        fs.readdirSync(subfolderPath).forEach((file) => {
+            const filePath = path.join(subfolderPath, file);
+            if (path.extname(file) === '.js') {
+                require(filePath)(app);
+                totalRoutes++;
+                console.log(chalk.bgHex('#FFFF99').hex('#333').bold(` Loaded Route: ${path.basename(file)} `));
+            }
+        });
+    }
+});
+console.log(chalk.bgHex('#90EE90').hex('#333').bold(' Load Complete! ✓ '));
+console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Total Routes Loaded: ${totalRoutes} `));
+
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'api-page', 'index.html'));
+    res.sendFile(path.join(__dirname, 'api-page', 'index.html'));
 });
 
-app.get('/dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'api-page', 'dashboard.html'));
+app.use((req, res, next) => {
+    res.status(404).sendFile(process.cwd() + "/api-page/404.html");
 });
 
-// 404
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'api-page', '404.html'));
-});
-
-// Error Handler
 app.use((err, req, res, next) => {
-  console.error('Internal Server Error:', err);
-  res.status(500).sendFile(path.join(__dirname, 'api-page', '500.html'));
+    console.error(err.stack);
+    res.status(500).sendFile(process.cwd() + "/api-page/500.html");
 });
 
-// === ini WAJIB!!! ===
-// Export function handler untuk Vercel
-const serverless = require('serverless-http');
-module.exports = serverless(app);
+app.listen(PORT, () => {
+    console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
+});
+
+module.exports = app;
