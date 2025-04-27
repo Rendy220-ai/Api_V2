@@ -75,4 +75,19 @@ app.listen(PORT, () => {
     console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server is running on port ${PORT} `));
 });
 
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const settings = await fetch('/src/settings.json').then(res => res.json());
+
+        if (settings.maintenance) {
+            window.location.href = '/maintenance.html';
+            return; // Stop proses lain
+        }
+
+        // lanjut proses loading normal...
+    } catch (error) {
+        console.error('Failed to load settings:', error);
+    }
+});
+
 module.exports = app;
