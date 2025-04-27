@@ -134,11 +134,16 @@ document.addEventListener('click', async event => {
 });
 
 async function fetchAPI(url, refs, apiName) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 1000); // 1 detik timeout
+
     try {
         refs.spinner.classList.remove('d-none');
         refs.content.classList.add('d-none');
 
-        const res = await fetch(url);
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeout);
+
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const type = res.headers.get('Content-Type');
@@ -157,18 +162,14 @@ async function fetchAPI(url, refs, apiName) {
         refs.endpoint.textContent = url;
         refs.endpoint.classList.remove('d-none');
 
-        // TUTUP MODAL setelah sukses
-        const modalElement = document.getElementById('apiResponseModal');
-        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) modalInstance.hide();
-
     } catch (error) {
-        refs.content.textContent = `Error: ${error.message}`;
+        refs.content.textContent = `Error: ${error.message.includes('abort') ? 'Request Timeout (10s)' : error.message}`;
     } finally {
         refs.spinner.classList.add('d-none');
         refs.content.classList.remove('d-none');
     }
 }
+
 // === Sidebar toggle ===
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
