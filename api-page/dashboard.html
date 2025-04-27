@@ -2,15 +2,15 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard Info</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* === RESET === */
+    /* RESET */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
     }
 
@@ -18,22 +18,22 @@
       background: #f0f2f5;
       color: #333;
       min-height: 100vh;
-      scroll-behavior: smooth;
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
-    /* === NAVBAR === */
+    /* NAVBAR */
     header {
       background: #fff;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       position: sticky;
       top: 0;
       z-index: 999;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      height: 60px;
     }
 
     header h1 {
@@ -56,13 +56,13 @@
       background: #0056b3;
     }
 
-    /* === SIDEBAR === */
+    /* SIDEBAR */
     .sidebar {
       position: fixed;
-      top: 0;
+      top: 60px;
       left: -260px;
       width: 220px;
-      height: 100%;
+      height: calc(100% - 60px);
       background: #fff;
       box-shadow: 2px 0 8px rgba(0,0,0,0.1);
       padding: 20px;
@@ -75,7 +75,7 @@
     }
 
     .sidebar h2 {
-      font-size: 22px;
+      font-size: 20px;
       margin-bottom: 20px;
       color: #333;
     }
@@ -96,34 +96,35 @@
       border-radius: 8px;
       text-decoration: none;
       color: #333;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
       transition: 0.3s;
     }
 
-    .sidebar ul li a:hover {
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
       background: #007bff;
       color: #fff;
     }
 
-    /* === MAIN CONTENT === */
+    /* MAIN CONTENT */
     .container {
       padding: 100px 20px 20px 20px;
-      transition: margin-left 0.3s;
+      transition: margin-left 0.3s ease;
     }
 
     .sidebar.active ~ .container {
       margin-left: 260px;
     }
 
-    /* === CARD STYLE === */
+    /* CARD STYLE */
     .card {
       background: #fff;
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       margin-bottom: 20px;
-      transition: 0.3s;
+      transition: transform 0.3s;
     }
 
     .card:hover {
@@ -133,7 +134,7 @@
 
     .card h2 {
       font-size: 1rem;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: #666;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -145,7 +146,7 @@
       color: #222;
     }
 
-    /* === FOOTER === */
+    /* FOOTER */
     footer {
       text-align: center;
       padding: 15px;
@@ -153,12 +154,13 @@
       font-size: 14px;
       color: #666;
       box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header/Navbar -->
+  <!-- Navbar -->
   <header>
     <h1>#Dashboard</h1>
     <button class="menu-btn" id="menuBtn">&#9776;</button>
@@ -200,18 +202,19 @@
   <script>
     const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
-const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
-sidebarLinks.forEach(link => {
-    link.addEventListener('click', function () {
-        sidebarLinks.forEach(l => l.classList.remove('active')); // hapus active lainnya
-        this.classList.add('active'); // tambah active di yang diklik
-    });
-});
+    const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+
     menuBtn.addEventListener('click', () => {
       sidebar.classList.toggle('active');
     });
 
-    // Battery
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', function () {
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
     navigator.getBattery?.().then(battery => {
       function updateBattery() {
         document.getElementById('batteryLevel').textContent = Math.floor(battery.level * 100) + '%';
@@ -222,7 +225,6 @@ sidebarLinks.forEach(link => {
       document.getElementById('batteryLevel').textContent = 'Not Supported';
     });
 
-    // Clock
     function updateTime() {
       const now = new Date();
       const formatted = now.toLocaleString('en-GB', { hour12: false });
@@ -231,7 +233,6 @@ sidebarLinks.forEach(link => {
     setInterval(updateTime, 1000);
     updateTime();
 
-    // IP Address
     fetch('https://api.ipify.org?format=json')
       .then(res => res.json())
       .then(data => {
